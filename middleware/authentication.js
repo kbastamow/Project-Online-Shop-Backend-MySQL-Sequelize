@@ -14,7 +14,7 @@ const authentication = async (req, res, next ) => {
       },
     });
     if (!tokenFound) {
-      return res.status(401).send({ msg: "Unauthorised request" });
+      return res.status(401).send({ msg: "User unauthenticated" });
     }
     req.user = user; //THIS ONE IS USED IN controllers
     next();
@@ -25,5 +25,36 @@ const authentication = async (req, res, next ) => {
 };
 
 
+//Check Admin
+const isAdmin = async (req, res, next) => {
+    try {
+        const role = req.user.role;
+        if (!role === "admin" || !role === "superadmin") {
+            return res.status(403).send({ msg: "Unauthorised request" })
+        } else {
+            next();
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error);
+}
+}
 
-module.exports = { authentication }; //this is an object
+//Check superAdmin
+
+const isSuperAdmin = async (req, res, next) => {
+    try {
+        const role = req.user.role;
+        if (!role === "superadmin") {
+            return res.status(403).send({ msg: "Unauthorised request" })
+        } else {
+            next();
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error);
+}
+}
+
+
+module.exports = { authentication, isAdmin, isSuperAdmin }; //this is an object

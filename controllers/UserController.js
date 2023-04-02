@@ -1,4 +1,4 @@
-const { User, Token, Sequelize } = require("../models/index.js");
+const { User, Order, Token, Sequelize } = require("../models/index.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { jwt_secret } = require("../config/config.json")["development"]
@@ -61,12 +61,42 @@ const UserController = {
             res.status(500).send("Error logging out");
         }
 
-    }
-  //next method here...
-
-
-
+    },
+  //seeAll
+     async getAll(req,res){
+        try{
+            const users = await User.findAll
+            ({
+                include: [Order],
+            });
+            res.send(users);
+        } catch(error) {
+            console.error(error);
+            res.status(500).send("error");
         }
+     },
+
+
+    //Delete User
+    async deleteById(req, res) {
+        try {
+            const foundUser = await User.findOne({    //FIRST we check if the user with that Id actually exists!
+                where: {
+                    id: req.params.id
+                }
+            });
+            if (!foundUser) {
+                return res.status(404).send({ msg: `User with id ${req.params.id} not found` });
+            }
+            await foundUser.destroy()  //I'm calling destroy directly in the variable defined above!
+            res.send({ msg: `User with id ${req.params.id} deleted` })
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error)
+        }
+    }
+
+}
 
     
 
