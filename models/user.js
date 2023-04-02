@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       User.hasMany(models.Review, { onDelete: "cascade" }), //Added these to specify relationship
-      User.hasMany(models.Order, { onDelete: "cascade" })
+      User.hasMany(models.Order, { onDelete: "cascade" }),
+      User.hasMany(models.Token)
     }
   }
   User.init({
