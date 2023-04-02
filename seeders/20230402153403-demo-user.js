@@ -18,7 +18,7 @@ module.exports = {
     name: "Frida",
     surname: "Kahlo",
     password: "1234",
-    role:"superAdmin",
+    role:"superadmin",
     createdAt: new Date(),
     updatedAt: new Date()
 },
