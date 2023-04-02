@@ -9,7 +9,7 @@ const UserController = {
 //CREATE NEW USER
     async create(req,res) {
         console.log(req.body.role); //CHECK and DELETE
-        req.body.role = "user";
+        req.body.role = "user"; //default
         try {
             const password = await bcrypt.hash(req.body.password, 10);
             const user = await User.create({...req.body, password});
@@ -89,13 +89,12 @@ const UserController = {
                 return res.status(404).send({ msg: `User with id ${req.params.id} not found` });
             }
             await foundUser.destroy()  //I'm calling destroy directly in the variable defined above!
-            res.send({ msg: `User with id ${req.params.id} deleted` })
+            res.send({ msg: "The following user has been deleted:", foundUser})
         } catch (error) {
             console.error(error);
             res.status(500).send(error)
         }
     }
-
 }
 
     
