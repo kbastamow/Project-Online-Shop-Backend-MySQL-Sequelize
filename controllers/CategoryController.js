@@ -1,5 +1,5 @@
-const { Category, Category_Product } = require("../models/index.js");
-
+const { Category, Product, Category_Product, Sequelize } = require("../models/index.js");
+const { Op } = Sequelize; 
 
 const CategoryController = {
    
@@ -23,6 +23,60 @@ const CategoryController = {
     }
    }, 
 
+   async getAllJoinProducts(req, res){
+    try{
+        const categories = await Category.findAll({
+            include: [{model: Product}]
+        });
+        res.send(categories)
+    } catch(error){
+        console.error(error);
+        res.status(500).send(error);
+    }
+   }, 
+
+   async findById(req, res){
+    try {
+        const foundCat = await Category.findOne({    
+            where: {
+                id: req.params.id
+            }
+        });
+        if (!foundCat) {
+            return res.status(404).send({ msg: `Category with id ${req.params.id} not found` });
+        } 
+        res.send(foundCat)
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error)
+    }
+   },
+
+
+
+   async findByName(req,res) {  //COULD ADD here a search function by category TOO!
+    try{
+        const category = await Category.findAll({
+            where: {
+                name: { [Op.like]:`%${req.params.name}%`}
+            }
+        });
+        if(!category){
+            return res.status(400).send("No category matches your search.")
+        }
+        res.send(category);
+    }catch(error){
+        console.error(error);
+        res.status(500).send(error);
+    }
+},
+
+
+
+
+
+
    async deleteById(req, res){
     try {
         const foundCat = await Category.findOne({    
@@ -42,7 +96,25 @@ const CategoryController = {
         console.error(error);
         res.status(500).send(error)
     }
-   }
+   },
+
+   async update(req,res){  
+    try{
+       const foundCat = await Category.findOne({    
+            where: {
+                id: req.params.id
+            }
+        });
+        if (!foundCat) {
+            return res.status(400).send({msg: `Category with id ${req.params.id} not found.`}
+        )}
+        await foundCat.update(req.body);
+        res.send({msg:"Product updated", foundCat});
+    } catch(error){
+        console.error(error);
+        res.status(500).send(error);
+    }
+},
 
 }
 
