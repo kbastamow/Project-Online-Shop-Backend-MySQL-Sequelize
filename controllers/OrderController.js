@@ -1,70 +1,48 @@
 const { Order, Product, Order_Product, User } = require("../models/index.js");
 
 
-const OrderController = { 
+const OrderController = {
 
-    async create(req,res){
-    try{
-       req.body.UserId = req.user.id; //THIS IS NOT WORKING (SHOULD BE Default, can be overridden by specifying user in req)
-       const orderArray = req.body.productAndQuantity; //array of objects
-       const order = await Order.create(req.body)
-       orderArray.forEach(pair => {
-        order.addProduct(pair.ProductId, { through: { quantity: pair.quantity }})
-       })
-         
-        res.status(201).send({msg: "Order created", order})
-    } catch(error){
-        res.status(500).send(error);
-    } 
+    async create(req, res) {
+        //IN POSTMAN: {    "productAndQuantity":[{"ProductId": 2, "quantity": 2 }, {"ProductId": 3, "quantity": 5}]   }
+        try {
+            req.body.UserId = req.user.id; //THIS IS NOT WORKING (SHOULD BE Default, can be overridden by specifying user in req)
+            const orderArray = req.body.productAndQuantity; //array of objects
+            for (pair of orderArray) {
+                const product = await Product.findByPk(pair.ProductId);  //find product by ID provided and check it exists
+                if (!product) {
+                    return res.status(400).send({ msg: `Product with id ${pair.ProductId} not found.` })
+                }
+            };
+            const order = await Order.create(req.body)
+            orderArray.forEach(pair => {
+                order.addProduct(pair.ProductId, { through: { quantity: pair.quantity } })  //THROUGH ACCESSES OTHER COlUMNS IN JUNCTION TABLE
+            })
 
+            res.status(201).send({ msg: "Order created", order })
+        } catch (error) {
+            res.status(500).send(error);
+        }
+    },
+
+    async getAllJoinProducts(req, res) {
+        try {
+            const orders = await Order.findAll({
+                attributes: ["id"],
+                include: [{ model: Product, attributes: ["name"], through: { model: Order_Product, attributes: ["quantity"] } }]
+            })
+            res.send(orders);
+        } catch (error) {
+            console.log(error)
+            res.status(500).send(error);
+        }
+    }
 }
 
-
-
-
-
-
-    // BELOW NOT WORKING FOR JUNCTION TABLE
-
-
-//    async create(req,res){  //RIGHT NOW THE CODE allows a logged in user to create orders (can't be created by admin, for example)
-//     try{
-//         const productAndQuantity = req.body; //POSTMAN: [  { "productId": 1, "quantity": 2 },  { "productId": 2, "quantity": 1 },  { "productId": 3, "quantity": 3 }]       
-//         const order = await Order.build();  //BUILD METHOD MAKES THE ORDER BUT DOESN'T SAVE IT IMMEDIATELY
-//         order.UserId = req.user.id; //Take userId from authentication
-//         for (pair of productAndQuantity) {
-//             const product = await Product.findByPk(pair.productId);  //find product by ID provided and check it exists
-//             console.log(product.name);
-            
-//             if(!product){
-//                 return res.status(400).send({msg:`Product with id ${pair.productId} not found.`})
-//             }
-//             await order.addProduct(product, { through: { quantity: productAndQuantity.quantity }});  //THROUGH ACCESSES OTHER COlUMNS IN JUNCTION TABLE
-//             console.log(productAndQuantity.quantity);
-//         }
-//         await order.save(); //THIS saves the order once it's been updated with the loop
-//         res.status(201).send({msg: "New order created", order});
-
-// // order.addProduct
-
-
-
-
-
-//     }catch(error) {
-//         console.error(error);
-//         res.status(500).send(error);
-//     }
-//    }
-}
 
 
 
     module.exports = OrderController;
-
-
-
-
 
 
 

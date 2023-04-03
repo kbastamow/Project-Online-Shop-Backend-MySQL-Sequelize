@@ -124,7 +124,25 @@ const UserController = {
         console.error(error);
         res.status(500).send(error);
     }
+  },
+
+  async getUserJoinOrdersConcise(req, res) {
+        try {
+      const user = await User.findByPk(req.params.id, {
+        attributes: ["id","name", "surname", "email"],
+        include:[{ 
+            model: Order, 
+            attributes:["id"], 
+            include: [{model: Product, attributes: ["name"]}]
+      }] 
+        });
+      res.send(user);
+    } catch(error){
+        console.error(error);
+        res.status(500).send(error);
+    }
   }
+
 
 
 
@@ -133,7 +151,7 @@ const UserController = {
 
 }
 
-    
+
 
 
 

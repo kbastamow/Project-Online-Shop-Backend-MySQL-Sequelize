@@ -10,6 +10,7 @@ router.post("/updateById/:id", UserController.updateById);
 router.put("/logout", authentication, UserController.logout);
 router.get("/getAll", UserController.getAll);
 router.get("/getUserJoinOrder/:id", UserController.getUserJoinOrders);
+router.get("/userOrderProducts/:id", UserController.getUserJoinOrdersConcise)
 router.delete("/deleteById/:id", UserController.deleteById);
 
 module.exports = router;

@@ -6,6 +6,7 @@ const router = express.Router();
 
 
 router.post("/create", authentication, OrderController.create);
+router.get("/getAllJoinProducts", OrderController.getAllJoinProducts);
 
 
 

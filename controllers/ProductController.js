@@ -5,7 +5,6 @@ const { Op } = Sequelize;
 
 const ProductController = { 
     async create(req, res){
-       
        /*I break the object sent through body apart so that I can extract categoryIds from postman.
        They allow me to include more than one category on one go */
         try{
@@ -31,7 +30,7 @@ const ProductController = {
     async getAllJoinCategories(req,res) {
         try{
             const products = await Product.findAll({
-                include: [{ model: Category, through: { attributes: [] } }],  //Adding categories to view
+                include: [{ model: Category, attributes:["name"], through: { attributes: [] } }],  //Adding categories to view. Specialising through: { attributes: [] } as empty excludes the junction table from the view
               });
             res.send(products);
         }catch(error){
