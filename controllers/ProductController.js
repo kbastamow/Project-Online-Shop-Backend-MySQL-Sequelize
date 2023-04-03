@@ -93,17 +93,6 @@ const ProductController = {
 },
 
 
-
-    // order: [
-    //     // Will escape title and validate DESC against a list of valid direction parameters
-    //     ['title', 'DESC'],
-    
-    //     // Will order by max(age)
-    //     sequelize.fn('max', sequelize.col('age')),
-    
-
-
-
    async update(req,res){  //HERE I SHOULD ADD LOOP FOR UPDATING CATEGORY TOO!
         try{
            const foundProduct = await Product.findOne({    

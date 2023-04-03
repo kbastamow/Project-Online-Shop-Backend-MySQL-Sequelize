@@ -1,4 +1,4 @@
-const { User, Order, Token, Sequelize } = require("../models/index.js");
+const { User, Order, Token, Product, Sequelize } = require("../models/index.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { jwt_secret } = require("../config/config.json")["development"]
@@ -75,6 +75,24 @@ const UserController = {
         }
      },
 
+ //Update User
+ async updateById(req, res) {
+    try {
+        const foundUser = await User.findOne({    //FIRST we check if the user with that Id actually exists!
+            where: {
+                id: req.params.id
+            }
+        });
+        if (!foundUser) {
+            return res.status(404).send({ msg: `User with id ${req.params.id} not found` });
+        }
+        await foundUser.update(req.body);  
+        res.send({ msg: "User details updated", foundUser})
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error)
+    }
+},
 
     //Delete User
     async deleteById(req, res) {
@@ -93,7 +111,26 @@ const UserController = {
             console.error(error);
             res.status(500).send(error)
         }
+    },
+  //see orders and products
+
+  async getUserJoinOrders(req, res) {
+    try {
+      const user = await User.findByPk(req.params.id, {
+        include:[{ model: Order, include: [{model: Product}]}],  
+    });
+      res.send(user);
+    } catch(error){
+        console.error(error);
+        res.status(500).send(error);
     }
+  }
+
+
+
+
+
+
 }
 
     
