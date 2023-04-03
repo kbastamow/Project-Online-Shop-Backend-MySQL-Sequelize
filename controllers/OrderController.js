@@ -4,45 +4,20 @@ const { Order, Product, Order_Product, User } = require("../models/index.js");
 const OrderController = { 
 
     async create(req,res){
-        try{
+    try{
        req.body.UserId = req.user.id; //THIS IS NOT WORKING (SHOULD BE Default, can be overridden by specifying user in req)
+       const orderArray = req.body.productAndQuantity; //array of objects
        const order = await Order.create(req.body)
-       order.addProduct(req.body.ProductId); //products   
-       
+       orderArray.forEach(pair => {
+        order.addProduct(pair.ProductId, { through: { quantity: pair.quantity }})
+       })
+         
         res.status(201).send({msg: "Order created", order})
     } catch(error){
         res.status(500).send(error);
     } 
 
 }
-
-// try {
-//     const book = await Book.create(req.body);
-//     book.addGenre(req.body.GenreId); //para insertar en la tabla intermedia
-//     res.send(book);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send(error);
-//   }
-
-
-
-
-
-// const { name, price, description, image, categoryIds } = req.body;
-                      
-// const product = await Product.create({
-//     name, 
-//     price: price || null,  //default values if no value is provided (optional fields)
-//     description: description || null,
-//     image: image || null
-// });
-
-// for (const categoryId of categoryIds) {  //loop through categoryIds (array) to map product to multiple categories
-//     await product.addCategory(categoryId);
-//   }
-
-
 
 
 
