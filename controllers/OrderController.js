@@ -24,7 +24,7 @@ const OrderController = {
             res.status(500).send(error);
         }
     },
-
+//Selecting only certain information to view
     async getAllJoinProducts(req, res) {
         try {
             const orders = await Order.findAll({

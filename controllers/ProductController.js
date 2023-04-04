@@ -77,7 +77,7 @@ const ProductController = {
         try{
             console.log("HELLO")
             const products = await Product.findAll({
-                order: [    //Norice double array
+                order: [    //Notice double array
                     ["price", "DESC"],
                 ],
                
@@ -111,7 +111,6 @@ const ProductController = {
     },
 
     async deleteById(req, res){
-        console.log("HELLO")
         try {
             const foundProduct = await Product.findOne({    
                 where: {
