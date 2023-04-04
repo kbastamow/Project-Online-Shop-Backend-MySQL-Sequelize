@@ -75,8 +75,7 @@ const ProductController = {
 
     async orderByPrice(req,res){
         try{
-            console.log("HELLO")
-            const products = await Product.findAll({
+           const products = await Product.findAll({
                 order: [    //Notice double array
                     ["price", "DESC"],
                 ],
@@ -121,7 +120,7 @@ const ProductController = {
                 return res.status(404).send({ msg: `Product with id ${req.params.id} not found` });
             }
             await foundProduct.destroy();
-            await Category_Product.destroy({where: {ProductId: req.params.id}});  //THIS LINE UPDATES JUNCTION TABLE
+            // await Category_Product.destroy({where: {ProductId: req.params.id}});  //THIS LINE UPDATES JUNCTION TABLE
      
             res.send({ msg: "The following product has been deleted:", foundProduct})
     

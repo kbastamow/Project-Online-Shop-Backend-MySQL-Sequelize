@@ -11,8 +11,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Product.hasMany(models.Review,{ onDelete: "cascade" }),  //Added cascade here, let's see if it works
-      Product.belongsToMany(models.Order, { through: models.Order_Product }), //This one was created manually
-      Product.belongsToMany(models.Category, { through: models.Category_Product })// Automatic creation -didn't work
+      Product.belongsToMany(models.Order, { through: models.Order_Product }), 
+      Product.belongsToMany(models.Category, { 
+        through: models.Category_Product,
+        onDelete: 'CASCADE' //THIS DOES NOT WORK!
+       })
     }
   }
   Product.init({

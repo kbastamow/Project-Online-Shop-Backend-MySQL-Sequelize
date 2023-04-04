@@ -55,19 +55,19 @@ const { Product, Category } = require('../models/index.js'); // Importing model 
 module.exports = {  //IMPOSSIBLEEEE:::
   async up (queryInterface, Sequelize) {
 
-    await Promise.all([
-      Product.create({
-          name: "Violin",
-          price: 430,
-          description: "Top class instrument for professional use",
-          image: "myimage.png",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          CategoryId: 1
-        }, {
-          include: [{model:Category}]
-      }),
-    ]);
+    // await Promise.all([
+    //   Product.create({
+    //       name: "Violin",
+    //       price: 430,
+    //       description: "Top class instrument for professional use",
+    //       image: "myimage.png",
+    //       createdAt: new Date(),
+    //       updatedAt: new Date(),
+    //       CategoryId: 1
+    //     }, {
+    //       include: [{model:Category}]
+    //   }),
+    // ]);
   
 
   },

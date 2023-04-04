@@ -5,7 +5,11 @@
       "database": "online_shop",
       "host": "127.0.0.1",
       "dialect": "mysql",
-      "jwt_secret": "your pw"
+      "jwt_secret": "your pw",
+      "auth": {
+        "user": "your email",
+        "pass": "your app password"
+    }
     },
     "test": {
       "username": "root",

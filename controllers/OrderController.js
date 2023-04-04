@@ -6,7 +6,6 @@ const OrderController = {
     async create(req, res) {
         //IN POSTMAN: {    "productAndQuantity":[{"ProductId": 2, "quantity": 2 }, {"ProductId": 3, "quantity": 5}]   }
         try {
-            req.body.UserId = req.user.id; //THIS IS NOT WORKING (SHOULD BE Default, can be overridden by specifying user in req)
             const orderArray = req.body.productAndQuantity; //array of objects
             for (pair of orderArray) {
                 const product = await Product.findByPk(pair.ProductId);  //find product by ID provided and check it exists
@@ -14,7 +13,7 @@ const OrderController = {
                     return res.status(400).send({ msg: `Product with id ${pair.ProductId} not found.` })
                 }
             };
-            const order = await Order.create(req.body)
+            const order = await Order.create({...req.body, UserId: req.user.id})
             orderArray.forEach(pair => {
                 order.addProduct(pair.ProductId, { through: { quantity: pair.quantity } })  //THROUGH ACCESSES OTHER COlUMNS IN JUNCTION TABLE
             })
