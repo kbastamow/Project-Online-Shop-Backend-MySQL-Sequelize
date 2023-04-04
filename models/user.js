@@ -16,11 +16,53 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   User.init({
-    email: DataTypes.STRING,
-    name: DataTypes.STRING,
-    surname: DataTypes.STRING,
-    password: DataTypes.STRING,
+    email: { 
+      type: DataTypes.STRING,
+      allowNull: false,   //added in migration but must add here too or validations won't work
+      validate: {
+        notNull: {    
+          msg: "Email is required."
+        },
+        isEmail: { //Built-in Sequelize validation 
+          msg: "Email not valid"
+        }
+      }
+    },
+
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "Name is required."
+        }
+      }
+    },
+
+    surname: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "Surname is required."
+        }
+      }
+    },
+
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "Password is required"
+        }
+      }
+    },
+
+
     role: DataTypes.STRING
+
+
   }, {
     sequelize,
     modelName: 'User',

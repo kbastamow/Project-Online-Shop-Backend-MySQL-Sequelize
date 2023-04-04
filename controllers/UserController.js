@@ -9,7 +9,7 @@ const transporter = require("../config/nodemailer");
 
 const UserController = {
 //CREATE NEW USER
-    async create(req, res) {
+    async create(req, res, next) {
         req.body.role = "user"; //default
         try {
             const password = await bcrypt.hash(req.body.password, 10);
@@ -21,9 +21,9 @@ const UserController = {
             await transporter.sendMail({   //Send email of confirmation
                 to: req.body.email,
                 subject: "Confirm your email to complete your registration",
-                html: `<h3>You're nearly there</h3>
+                html: `<h3>You're nearly there!</h3>
                     <a href="${url}">Click here to start shopping!</a>
-                    <p>This link will expire in 24 hours</p>
+                    <p>This link will expire in 24 hours.</p>
                     `,
             });
             res.status(201).send({
@@ -33,7 +33,7 @@ const UserController = {
 
         } catch (error) {
             console.error(error);
-            res.send(error);
+            next(error);
         }
     },
 //Create login
