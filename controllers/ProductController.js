@@ -2,7 +2,7 @@ const { Product, Category, Category_Product, Sequelize } = require("../models/in
 const { Op } = Sequelize; 
 
 const ProductController = { 
-    async create(req, res){
+    async create(req, res, next){
        /*I break the object sent through body apart so that I can extract categoryIds from postman.
        They allow me to include more than one category on one go */
         try{
@@ -21,7 +21,7 @@ const ProductController = {
             res.status(201).send({msg:"New product created", product }); 
         }catch(error){
             console.log(error);
-            res.status(500).send(error);
+            next(error);
         }
     },
 
