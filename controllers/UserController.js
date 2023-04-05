@@ -6,9 +6,8 @@ const { Op } = Sequelize;
 const transporter = require("../config/nodemailer");
 
 
-
 const UserController = {
-//CREATE NEW USER
+    //CREATE NEW USER
     async create(req, res, next) {
         req.body.role = "user"; //default
         try {
@@ -36,51 +35,7 @@ const UserController = {
             next(error);
         }
     },
-//Create login
-    async login(req, res) {
-        try {
-            const user = await User.findOne({
-                where: { email:req.body.email }
-            });
-            if (!user) {
-                return res.status(400).send("Incorrect email or password");//return so the code breaks here
-            }
-            if(!user.confirmed){  //check if user has confirmed their registration by email link
-                return res.status(400).send({msg:"Check your email to complete your registration"})
-            }
 
-            const isMatch = bcrypt.compareSync(req.body.password, user.password);
-            if (!isMatch) {
-                res.status(400).send("Incorrect email or password");
-            }
-            const token = jwt.sign({ id: user.id }, jwt_secret); // create token
-            Token.create({ token, UserId: user.id }); //save to table - remember to import on top!
-            res.send({ token, msg: `Welcome ${user.name}`, user });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send(error);
-        }
-    },
-    //logout
-    async logout(req,res){  //Create authentication before creating logout, so req.user.id doesn't appear undefined
-        console.log(req.user);
-        try{
-          console.log(req.headers.authorization);  
-          await Token.destroy({   //destroying the token
-            where: {
-                [Op.and]: [
-                    {UserId: req.user.id},
-                    {token: req.headers.authorization}
-                ]
-            }
-          });
-           res.send({ msg: "Logged out" });
-        }catch(error) {
-            console.error(error);
-            res.status(500).send("Error logging out");
-        }
-
-    },
     //change confirmation after registration
     async confirm(req, res) {
         try {
@@ -98,39 +53,118 @@ const UserController = {
         }
 
     },
-    
-  //seeAll
-     async getAll(req,res){
-        try{
-            const users = await User.findAll
-            ({
-                include: [Order],
+
+    //Create login
+    async login(req, res) {
+        try {
+            const user = await User.findOne({
+                where: { email: req.body.email }
             });
+            if (!user) {
+                return res.status(400).send("Incorrect email or password");//return so the code breaks here
+            }
+            if (!user.confirmed) {  //check if user has confirmed their registration by email link
+                return res.status(400).send({ msg: "Check your email to complete your registration" })
+            }
+
+            const isMatch = bcrypt.compareSync(req.body.password, user.password);
+            if (!isMatch) {
+                res.status(400).send("Incorrect email or password");
+            }
+            const token = jwt.sign({ id: user.id }, jwt_secret); // create token
+            Token.create({ token, UserId: user.id }); //save TOKEN to table - remember to import on top!
+            res.send({ token, msg: `Welcome ${user.name}`, user });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
+    },
+
+    //logout
+    async logout(req, res) {  //Create authentication before creating logout, so req.user.id doesn't appear undefined
+        console.log(req.user);
+        try {
+            console.log(req.headers.authorization);
+            await Token.destroy({   //destroying the token
+                where: {
+                    [Op.and]: [
+                        { UserId: req.user.id },
+                        { token: req.headers.authorization }
+                    ]
+                }
+            });
+            res.send({ msg: "Logged out" });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Error logging out");
+        }
+
+    },
+
+
+    //seeAll
+    async getAll(req, res) {
+        try {
+            const users = await User.findAll
+                ({
+                    include: [Order],
+                });
             res.send(users);
-        } catch(error) {
+        } catch (error) {
             console.error(error);
             res.status(500).send("error");
         }
-     },
+    },
 
- //Update User
- async updateById(req, res) {
-    try {
-        const foundUser = await User.findOne({    //FIRST we check if the user with that Id actually exists!
-            where: {
-                id: req.params.id
-            }
-        });
-        if (!foundUser) {
-            return res.status(404).send({ msg: `User with id ${req.params.id} not found` });
+    //see orders and products
+    async getUserJoinOrders(req, res) {
+        try {
+            const user = await User.findByPk(req.params.id, {
+                include: [{ model: Order, include: [{ model: Product }] }],
+            });
+            res.send(user);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
         }
-        await foundUser.update(req.body);  
-        res.send({ msg: "User details updated", foundUser})
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(error)
-    }
-},
+    },
+
+ //see orders and products but with fewer details
+    async getUserJoinOrdersConcise(req, res) {
+        try {
+            const user = await User.findByPk(req.params.id, {
+                attributes: ["id", "name", "surname", "email"],
+                include: [{
+                    model: Order,
+                    attributes: ["id"],
+                    include: [{ model: Product, attributes: ["name"] }]
+                }]
+            });
+            res.send(user);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
+    },
+
+    //Update User
+    async updateById(req, res) {
+        try {
+            const foundUser = await User.findOne({    //FIRST we check if the user with that Id actually exists!
+                where: {
+                    id: req.params.id
+                }
+            });
+            if (!foundUser) {
+                return res.status(404).send({ msg: `User with id ${req.params.id} not found` });
+            }
+            await foundUser.update(req.body);
+            res.send({ msg: "User details updated", foundUser })
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error)
+        }
+    },
 
     //Delete User
     async deleteById(req, res) {
@@ -143,43 +177,14 @@ const UserController = {
             if (!foundUser) {
                 return res.status(404).send({ msg: `User with id ${req.params.id} not found` });
             }
-            await foundUser.destroy()  //I'm calling destroy directly in the variable defined above!
-            res.send({ msg: "The following user has been deleted:", foundUser})
+            await foundUser.destroy()  //I'm calling destroy directly on the variable defined above!
+            res.send({ msg: "The following user has been deleted:", foundUser })
         } catch (error) {
             console.error(error);
             res.status(500).send(error)
         }
-    },
-  //see orders and products
-
-  async getUserJoinOrders(req, res) {
-    try {
-      const user = await User.findByPk(req.params.id, {
-        include:[{ model: Order, include: [{model: Product}]}],  
-    });
-      res.send(user);
-    } catch(error){
-        console.error(error);
-        res.status(500).send(error);
     }
-  },
 
-  async getUserJoinOrdersConcise(req, res) {
-        try {
-      const user = await User.findByPk(req.params.id, {
-        attributes: ["id","name", "surname", "email"],
-        include:[{ 
-            model: Order, 
-            attributes:["id"], 
-            include: [{model: Product, attributes: ["name"]}]
-      }] 
-        });
-      res.send(user);
-    } catch(error){
-        console.error(error);
-        res.status(500).send(error);
-    }
-  }
 
 
 

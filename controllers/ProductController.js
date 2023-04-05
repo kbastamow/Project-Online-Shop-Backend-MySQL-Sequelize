@@ -1,8 +1,6 @@
 const { Product, Category, Category_Product, Sequelize } = require("../models/index.js");
 const { Op } = Sequelize; 
 
-
-
 const ProductController = { 
     async create(req, res){
        /*I break the object sent through body apart so that I can extract categoryIds from postman.
@@ -39,6 +37,19 @@ const ProductController = {
         }
     },
 
+    async findById(req, res) {
+        try {
+            const foundProduct = await Product.findByPk(req.params.id);
+            if (!foundProduct) {
+                return res.status(404).send({ msg: `Products with id ${req.params.id} not found` });
+            }
+            res.send(foundProduct)
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error)
+        }
+    },
+    
     async findByName(req,res) {  //COULD ADD here a search function by category TOO!
         try{
             const product = await Product.findAll({
@@ -56,7 +67,7 @@ const ProductController = {
         }
     },
 
-    async findByPrice(req,res) {  //COULD ADD here a search function by category TOO!
+    async findByPrice(req,res) {  
         try{
            const products = await Product.findAll({
                 where: {
@@ -66,7 +77,7 @@ const ProductController = {
             if(!products){
                 return res.status(400).send("No product matches your search.")
             }
-            res.send(products);
+            res.send({msg: `Products within price range ${+req.params.price - 50}-${+req.params.price + 50}€`, products});
         }catch(error){
             console.error(error);
             res.status(500).send(error);
@@ -76,22 +87,18 @@ const ProductController = {
     async orderByPrice(req,res){
         try{
            const products = await Product.findAll({
-                order: [    //Notice double array
+                order: [    //Notice double array:
                     ["price", "DESC"],
-                ],
-               
+                ], 
             })
             res.send(products);
-
-
         }catch(error){
             console.error(error);
             res.status(500).send(error);
     }
 },
 
-
-   async update(req,res){  //HERE I SHOULD ADD LOOP FOR UPDATING CATEGORY TOO!
+   async updateById(req,res){  
         try{
            const foundProduct = await Product.findOne({    
                 where: {
@@ -102,6 +109,7 @@ const ProductController = {
                 return res.status(400).send({msg: `Product with id ${req.params.id} not found.`}
             )}
             await foundProduct.update(req.body);
+            foundProduct.setCategories(req.body.CategoryId); //Update category, notice plural "Categories"!
             res.send({msg:"Product updated", foundProduct});
         } catch(error){
             console.error(error);
@@ -120,7 +128,7 @@ const ProductController = {
                 return res.status(404).send({ msg: `Product with id ${req.params.id} not found` });
             }
             await foundProduct.destroy();
-            // await Category_Product.destroy({where: {ProductId: req.params.id}});  //THIS LINE UPDATES JUNCTION TABLE
+            await Category_Product.destroy({where: {ProductId: req.params.id}});  //Delete from junction table
      
             res.send({ msg: "The following product has been deleted:", foundProduct})
     
@@ -129,8 +137,6 @@ const ProductController = {
             res.status(500).send(error)
         }
        }
-
-
 
 }
 
