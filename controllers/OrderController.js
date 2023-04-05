@@ -27,9 +27,10 @@ const OrderController = {
     async getAllJoinProducts(req, res) {
         try {
             const orders = await Order.findAll({
-                attributes: ["id"],
+                attributes: [["id", "Order ID"]], //second value is alias
                 include: [{ model: Product, attributes: ["name"], through: { model: Order_Product, attributes: ["quantity"] } }]
             })
+            console.log(req.user.role)
             res.send(orders);
         } catch (error) {
             console.log(error)
@@ -37,6 +38,29 @@ const OrderController = {
         }
     },
 
+      //See my orders and products - for users
+
+    async getMyOrders(req, res) {
+        try {
+            console.log("This is user" + req.user.id)
+            const orders = await Order.findAll({
+                where: {
+                    UserId: req.user.id
+                },
+                attributes: [["updatedAt", "Order created or updated on"]],
+                include: ({
+                    model: Product,
+                    attributes: [["name", "Name of Product"]], //THE SECOND PARAMETER IS ALIAS. NOTICE THE DOUBLE ARRAY              
+                    through: { attributes: ["quantity"] }, // include 'quantity' attribute from junction table
+                })
+            });
+            res.send(orders);
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
+    }
 }
 
 

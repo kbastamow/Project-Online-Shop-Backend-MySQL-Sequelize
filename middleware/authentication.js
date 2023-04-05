@@ -25,31 +25,33 @@ const authentication = async (req, res, next ) => {
 };
 
 
-//Check Admin
+// Check Admin
 const isAdmin = async (req, res, next) => {
-    try {
-        const role = req.user.role;
-        if (!role === "admin" || !role === "superadmin") {
-            return res.status(403).send({ msg: "Unauthorised request" })
-        } else {
-            next();
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
+  try {
+      const role = req.user.role;
+      if (role === "admin" || role === "superadmin") {
+        next();
+      } else {
+        return res.status(403).send({ msg: "Unauthorised request" })
+      }
+      
+      } catch (error) {
+      console.error(error);
+      res.status(500).send(error);
 }
 }
+
 
 //Check superAdmin
 
 const isSuperAdmin = async (req, res, next) => {
     try {
         const role = req.user.role;
-        if (!role === "superadmin") {
+        if (role !== "superadmin") {
             return res.status(403).send({ msg: "Unauthorised request" })
-        } else {
-            next();
         }
+        next();
+       
     } catch (error) {
         console.error(error);
         res.status(500).send(error);
@@ -58,3 +60,6 @@ const isSuperAdmin = async (req, res, next) => {
 
 
 module.exports = { authentication, isAdmin, isSuperAdmin }; //this is an object
+
+
+// || !role === "superadmin"

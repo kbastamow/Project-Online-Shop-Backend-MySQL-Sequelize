@@ -129,7 +129,7 @@ const UserController = {
         }
     },
 
- //see orders and products but with fewer details
+     //See orders and products but with fewer details
     async getUserJoinOrdersConcise(req, res) {
         try {
             const user = await User.findByPk(req.params.id, {
@@ -147,7 +147,7 @@ const UserController = {
         }
     },
 
-    //Update User
+     //Update User
     async updateById(req, res) {
         try {
             const foundUser = await User.findOne({    //FIRST we check if the user with that Id actually exists!

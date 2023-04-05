@@ -59,6 +59,10 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
 
+    confirmed: {  //Had to add this by hand here, or won't work in code
+      type: DataTypes.BOOLEAN,
+    },
+
 
     role: DataTypes.STRING
 
