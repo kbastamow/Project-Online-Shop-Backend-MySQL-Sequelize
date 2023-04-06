@@ -10,14 +10,67 @@ const ReviewController = {
                 return res.status(404).send({msg:`Product with id ${foundProduct} doesn't exist.`})
             }
 
-            // if (req.body.stars < 0 || req.body.stars  )
             const review = await Review.create({ ...req.body, UserId: req.user.id });
             res.status(201).send({msg: `New review created`, review})
         } catch(error){
             console.error(error);
             next();
         }
-    }
+    },
+
+    async getAll(req, res) {
+        try{
+            const reviews = await Review.findAll({
+                include: [{ 
+                    model: Product, 
+                    attributes: ["id", "name"]
+                }, {
+                    model: User,
+                    attributes: ["id", "name", "surname", "email"]
+                 }] 
+            })
+
+            res.send(reviews);
+
+        } catch(error){
+            console.error(error);
+            res.status(500).send(error);
+        }
+    },
+
+    async updateById(req, res) {
+        try {
+            const review = await Review.findByPk(req.params.id);
+            if (review.UserId !== req.user.id) {
+                return res.status(401).send("Not authorised to update this review");
+            }
+            await review.update(req.body);
+            res.send({msg: `Review updated`, review})
+         } catch(error){
+            console.error(error);
+            res.status(500).send(error);
+        }
+            },
+
+
+        async deleteById(req, res) {
+            try {
+                console.log("HELLO1")
+                const review = await Review.findByPk(req.params.id);
+                if (review.UserId !== req.user.id) {
+                    return res.status(401).send("Not authorised to delete this review");
+                }
+                console.log("HELLO2")
+                await review.destroy();
+                res.send({msg: `Review deleted`, review})
+
+             } catch(error){
+                console.error(error);
+                res.status(500).send(error);
+            }
+                },
+        
+    
 
 
 

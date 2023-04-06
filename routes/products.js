@@ -5,7 +5,7 @@ const { authentication, isAdmin } = require("../middleware/authentication");
 
 
 router.post("/createProduct", authentication, isAdmin, ProductController.create);
-router.get("/getAllJoinCategories", ProductController.getAllJoinCategories);
+router.get("/getAllwithAssociations", ProductController.getAllwithAssociations);
 router.get("/findByName/:name", ProductController.findByName);
 router.get("/findByPrice/:price", ProductController.findByPrice);
 router.get("/orderByPrice", ProductController.orderByPrice);

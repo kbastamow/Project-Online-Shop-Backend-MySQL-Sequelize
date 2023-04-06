@@ -1,4 +1,4 @@
-const { Product, Category, Category_Product, Sequelize } = require("../models/index.js");
+const { Product, Category, Category_Product, Review, Sequelize } = require("../models/index.js");
 const { Op } = Sequelize; 
 
 const ProductController = { 
@@ -21,10 +21,16 @@ const ProductController = {
         }
     },
 
-    async getAllJoinCategories(req,res) {
+    async getAllwithAssociations(req,res) {
         try{
             const products = await Product.findAll({
-                include: [{ model: Category, attributes:["name"], through: { attributes: [] } }],  //Adding categories to view. Specialising through: { attributes: [] } as empty excludes the junction table from the view
+                include: [{ 
+                    model: Category, 
+                    attributes:["name"], 
+                    through: { attributes: [] } //Adding categories to view. Specialising through: { attributes: [] } as empty excludes the junction table from the view
+                 }, {
+                    model: Review
+                } ], 
               });
             res.send(products);
         }catch(error){
@@ -35,7 +41,15 @@ const ProductController = {
 
     async findById(req, res) {
         try {
-            const foundProduct = await Product.findByPk(req.params.id);
+            const foundProduct = await Product.findByPk(req.params.id, {
+                include:  [{ 
+                    model: Category, 
+                    attributes:["name"], 
+                    through: { attributes: [] } //Adding categories to view. Specialising through: { attributes: [] } as empty excludes the junction table from the view
+                 }, {
+                    model: Review
+                } ], 
+            });
             if (!foundProduct) {
                 return res.status(404).send({ msg: `Products with id ${req.params.id} not found` });
             }
