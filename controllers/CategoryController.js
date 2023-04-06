@@ -61,7 +61,7 @@ const CategoryController = {
                 }
             });
             if (!category) {
-                return res.status(400).send("No category matches your search.")
+                return res.status(404).send("No category matches your search.")
             }
             res.send(category);
         } catch (error) {
@@ -78,7 +78,7 @@ const CategoryController = {
                 }
             });
             if (!foundCat) {
-                return res.status(400).send({ msg: `Category with id ${req.params.id} not found.` }
+                return res.status(404).send({ msg: `Category with id ${req.params.id} not found.` }
                 )
             }
             await foundCat.update(req.body);

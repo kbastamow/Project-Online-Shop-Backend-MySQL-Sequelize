@@ -2,24 +2,20 @@ const { Product, Category, Category_Product, Sequelize } = require("../models/in
 const { Op } = Sequelize; 
 
 const ProductController = { 
-    async create(req, res, next){
-       /*I break the object sent through body apart so that I can extract categoryIds from postman.
-       They allow me to include more than one category on one go */
-        try{
-            const { name, price, description, image, categoryIds } = req.body;
-                      
-            const product = await Product.create({
-                name, 
-                price: price || null,  //default values if no value is provided (optional fields)
-                description: description || null,
-                image: image || null
+    async create(req, res, next) {
+        try {
+            const categoryIds = req.body.CategoryId;
+            categoryIds.forEach(async(entry)  => {  //Using a forEach function, necessary to add 
+                const foundId = await Category.findByPk(entry);
+                if (!foundId) {
+                    return res.status(404).send({ msg: `Category with id ${entry} not found.` })
+                }
             });
+            const product = await Product.create(req.body);
+            product.addCategories(req.body.CategoryId);
+            res.status(201).send({ msg: "New product created", product });
 
-            for (const categoryId of categoryIds) {  //loop through categoryIds (array) to map product to multiple categories
-                await product.addCategory(categoryId);
-              }
-            res.status(201).send({msg:"New product created", product }); 
-        }catch(error){
+        } catch (error) {
             console.log(error);
             next(error);
         }

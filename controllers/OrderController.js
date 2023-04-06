@@ -10,7 +10,7 @@ const OrderController = {
             for (pair of orderArray) {
                 const product = await Product.findByPk(pair.ProductId);  //find product by ID provided and check it exists
                 if (!product) {
-                    return res.status(400).send({ msg: `Product with id ${pair.ProductId} not found.` })
+                    return res.status(404).send({ msg: `Product with id ${pair.ProductId} not found.` })
                 }
             };
             const order = await Order.create({...req.body, UserId: req.user.id})
