@@ -20,85 +20,90 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
         <div class="container-fluid">
-
+    
             <div class="btn-group ">
                 <button class="btn btn-primary rounded-5 mx-3" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvas">
                     <i class="fa-solid fa-user"></i>
                 </button>
-                <button id="product-btn" type="button" class="btn btn-primary-outline text-bg-dark shadow-none">See all products</button>
+    
+    
+                <button id="product-btn" type="button" class="btn btn-primary-outline text-bg-dark shadow-none">See all
+                    products</button>
                 
-                <div class="dropdown">
-                    <button id="instruments" type="button"
-                        class="btn btn-primary-outline text-bg-dark dropdown-toggle shadow-none"
-                        data-bs-toggle="dropdown" aria-expanded="false">Instruments</button>
-
-                    <ul class="dropdown-menu" aria-labelledby="instruments">
-                        <li><button class="dropdown-item" type="button">Guitars</button></li>
-                        <li><button class="dropdown-item" type="button">Wind instruments</button></li>
-                        <li><button class="dropdown-item" type="button">String instruments</button></li>
-                        <li><button class="dropdown-item" type="button">Keys</button></li>
-                    </ul>
+                    <div class="dropdown">
+                        <button id="instruments" type="button"
+                            class="btn btn-primary-outline text-bg-dark dropdown-toggle shadow-none"
+                            data-bs-toggle="dropdown" aria-expanded="false">Instruments</button>
+    
+                        <ul class="dropdown-menu" aria-labelledby="instruments">
+                            <li><button class="dropdown-item" type="button" value="Guitars">Guitars</button></li>
+                            <li><button class="dropdown-item" type="button" value="Wind instruments">Wind instruments</button></li>
+                            <li><button class="dropdown-item" type="button" value="String instruments">String instruments</button></li>
+                            <li><button class="dropdown-item" type="button" value="Keys">Keys</button></li>
+                            <li><button class="dropdown-item" type="button" value="Instruments">All instruments</button></li>
+                        </ul>
+                    </div>
+    
+                    <button id="accessories" type="button" class="btn btn-primary-outline text-bg-dark">Accessories</button>
+                    <button id="music" type="button" class="btn btn-primary-outline text-bg-dark">Sheet music</button>
                 </div>
-
-                <button type="button" class="btn btn-primary-outline text-bg-dark">Accessories</button>
-                <button type="button" class="btn btn-primary-outline text-bg-dark">Sheet music</button>
             </div>
-
-            <form class="d-flex">
-                <input class="form-control form-control-sm me-2" type="text" placeholder="Search for products">
-                <button id="search-btn" class="btn btn-primary btn-sm" type="button">Search</button>
+    
+            <form id="search" class="d-flex">
+                <input id="search-text" class="form-control form-control-sm me-2" type="text" placeholder="Search products">
+                <input id="search-btn" class="btn btn-primary btn-sm me-3" type="submit" value="Search"></input>
             </form>
-
+    
         </div>
         </div>
     </nav>
-
-
+    
+    
     <!-- Offcanvas Sidebar -->
     <div class="offcanvas offcanvas-start w-auto" id="offcanvas">
         <!-- <div class="d-flex offcanvas-header justify-content-end  mb-0">
-      
-    </div>
-     -->
+          
+        </div>
+         -->
         <div class="offcanvas-body">
             <div class="d-flex justify-content-end me-0">
                 <button type="button" class="btn-close mb-2" data-bs-dismiss="offcanvas"></button>
             </div>
-            <div id="offcanvas" class="p pe-5">
-
+            <div id="form-display" class="p pe-5">
+    
                 <!-- Login form -->
                 <form id="login-form">
                     <h5 class="text-center">Login to your account</h5>
                     <div id="login-alert">hhh</div>
-
-
+    
+    
                     <div class="form-outline mb-2">
                         <label for="email">Email</label><br>
-                        <input type="email" id="email" class="form-control form-control-sm"  />
+                        <input type="email" id="email" class="form-control form-control-sm" />
                     </div>
-
+    
                     <div class="form-outline mb-2">
                         <label for="password">Password</label><br>
                         <input type="password" id="password" class="form-control form-control-sm" />
                     </div>
-
+    
                     <div class="text-center pt-1 mb-4 pb-1">
                         <input id="login-btn" class="btn btn-primary px-5" type="submit" value="Login" disabled></input>
                     </div>
-
+    
                 </form>
                 <hr>
-
-
-
+    
+    
+    
                 <!-- <div class="d-flex align-items-center justify-content-center pb-4"> -->
                 <h5 class="text-center">Don't have an account?</h5>
                 <div class="text-center pt-1 mt-3 pb-1">
                     <button id="reveal-form-btn" type="button" class="btn btn-outline-danger px-4">Create new</button>
                     <div id="signup-alert"></div>
                 </div>
-
+    
                 <form id="signup-form" datahide="hidden">
                     <label class="form-label" for="sign-up-name">Name</label>
                     <input type="text" id="name" class="form-control form-control-sm" />
@@ -110,23 +115,20 @@
                     <input type="password" id="password-one" class="form-control form-control-sm" />
                     <label class="form-label" for="password-two">Repeat password </label>
                     <input type="password" id="password-two" class="form-control form-control-sm" />
-
+    
                     <div class="text-center pt-1 mt-1 mb-4 pb-1">
                         <input id="signup-btn" class="btn btn-primary px-5" type="submit" value="Sign up" disabled></input>
                     </div>
-
+    
                 </form>
             </div>
         </div>
     </div>
 
-
     <!-- main view -->
 
-    <main class="d-flex">
-
-      
-        <div id="products" class="d-flex flex-wrap ">
+    <main>
+        <div id="products" class="d-flex flex-wrap">
           
             <div class="card m-3 p-2 col-2 text-center bg-danger">
                 <h4 class="card-title mb-3 bg-black text-bg-dark p-2">Electric guitar</h4>
