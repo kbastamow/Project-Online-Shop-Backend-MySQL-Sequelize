@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
 
     details: DataTypes.STRING,
 
-    UserId: {
+      UserId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -49,7 +49,10 @@ module.exports = (sequelize, DataTypes) => {
         },
       }
     }
-  }, {
+
+  },
+  
+  {
     sequelize,
     modelName: 'Review',
   });

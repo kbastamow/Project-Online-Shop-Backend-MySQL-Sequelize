@@ -1,3 +1,7 @@
+bcrypt = require("bcryptjs");
+
+
+
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
@@ -5,41 +9,68 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     return queryInterface.bulkInsert ( "Users", [
       {
-      email: "vincent@example.com",
-      name: "Vincent",
-      surname: "Van Gogh",
-      password: "1234",
+      email: "testadmin@example.co",
+      name: "Andy",
+      surname: "Administrator",
+      password: bcrypt.hashSync("1234", 10), 
       role:"admin",
+      confirmed: true,
       createdAt: new Date(),
       updatedAt: new Date()
     },
   {
-    email: "frida@example.com",
-    name: "Frida",
-    surname: "Kahlo",
-    password: "1234",
+    email: "test_superadmin@example.co",
+    name: "Sarah",
+    surname: "Superadmin",
+    password: bcrypt.hashSync("1234", 10),
     role:"superadmin",
+    confirmed: true,
     createdAt: new Date(),
     updatedAt: new Date()
 },
 {
-  email: "claude@example.com",
-  name: "Claude",
-  surname: "Monet",
-  password: "1234",
+  email: "testuser@example.co",
+  name: "Tony",
+  surname: "Tester",
+  password: bcrypt.hashSync("1234", 10),
   role:"user",
+  confirmed: true,
+  confirmed: true,
   createdAt: new Date(),
   updatedAt: new Date()
 },
 {
-  email: "mary@example.com",
-  name: "Mary",
-  surname: "Shelley",
-  password: "1234",
+  email: "testuser_two@example.tes",
+  name: "Jill",
+  surname: "Jester",
+  password: bcrypt.hashSync("1234", 10),
   role:"user",
+  confirmed: true,
   createdAt: new Date(),
   updatedAt: new Date()
 },
+  {
+  email: "testuser_three@example.tes",
+  name: "Fred",
+  surname: "Fester",
+  password: bcrypt.hashSync("1234", 10),
+  role:"user",
+  confirmed: true,
+  createdAt: new Date(),
+  updatedAt: new Date()
+},
+
+{
+  email: "testuser_four@example.tes",
+  name: "Bob",
+  surname: "Bester",
+  password: bcrypt.hashSync("1234", 10),
+  role:"user",
+  confirmed: true,
+  createdAt: new Date(),
+  updatedAt: new Date()
+},
+
   ])
   },
 
