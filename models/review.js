@@ -48,8 +48,12 @@ module.exports = (sequelize, DataTypes) => {
           msg: "Enter a valid product id."
         },
       }
-    }
+    },
 
+    approved: {
+      type: DataTypes.BOOLEAN,
+    }
+ 
   },
   
   {

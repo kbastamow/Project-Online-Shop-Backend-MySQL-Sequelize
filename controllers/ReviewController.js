@@ -10,7 +10,7 @@ const ReviewController = {
                 return res.status(404).send({msg:`Product with id ${foundProduct} doesn't exist.`})
             }
 
-            const review = await Review.create({ ...req.body, UserId: req.user.id });
+            const review = await Review.create({ ...req.body, UserId: req.user.id, approved:false }); //default value false
             res.status(201).send({msg: `New review created`, review})
         } catch(error){
             console.error(error);
@@ -38,10 +38,21 @@ const ReviewController = {
         }
     },
 
+    async approvedByAdmin(req,res) {
+        try {
+            const review = await Review.findByPk(req.params.id);
+            review.update({approved:true});
+            res.send({msg:"Review approved for publication", review });
+        } catch(error){
+            console.error(error);
+            res.status(500).send(error);
+        }
+    },
+ 
     async updateById(req, res) {
         try {
             const review = await Review.findByPk(req.params.id);
-            if (review.UserId !== req.user.id) {
+            if (review.UserId !== req.user.id) { 
                 return res.status(401).send("Not authorised to update this review");
             }
             await review.update(req.body);

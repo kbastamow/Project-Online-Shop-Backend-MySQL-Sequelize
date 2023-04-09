@@ -26,11 +26,11 @@ module.exports = {
         updatedAt: new Date()
       },
       {
-      quantity: 1,
-      OrderId: 4,
-      ProductId: 1,
-      createdAt: new Date(),
-      updatedAt: new Date()
+        quantity: 1,
+        OrderId: 4,
+        ProductId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         quantity: 1,
