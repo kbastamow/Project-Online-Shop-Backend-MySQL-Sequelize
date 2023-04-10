@@ -64,38 +64,6 @@ let cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
 function displayProducts(array) {
   clearDisplay()
   array.forEach(product => {
-    //Extracting reviews
-
-    let reviews = product.Reviews;
-    console.log("reviews ", reviews);
-    // const rating = document.getElementById("rating");
-    let ratingDisplay = "";
-
-    if (reviews.length === 0) {
-      ratingDisplay = `<p>No reviews yet</p>`
-    } else {
-      let average = reviews.reduce((acc, val) => acc + val.stars, 0) / reviews.length
-      console.log(average);
-      average = Math.round(average * 2) / 2 //rounds to nearest 0.5
-
-      let fullStars = Math.floor(average);
-      let halfStars = average - fullStars;
-      let emptyStars = 5 - Math.ceil(average);
-   
-      for (let i = 0; i < fullStars; i++) {
-        ratingDisplay += `<i class="fa-solid fa-star" style="color: #ffff00;"></i>`
-      }
-      if (halfStars) {
-        ratingDisplay += `<i class="fa-regular fa-star-half-stroke" style="color: #ffff00;"></i>`
-      }
-      for (let i = 0; i < emptyStars; i++) {
-        ratingDisplay += `<i class="fa-regular fa-star" style="color: #ffff00;"></i>`
-      }
-        ratingDisplay += `<p class="read-more mt-2" data-bs-toggle="collapse" data-bs-target="#reviews${product.id}">Read more</p>
-                      <div id="reviews${product.id}" class="collapse text-center"></div>`
-    }
-
-    
 
     //Displayin in HTML    
     let card = document.createElement("div");
@@ -109,12 +77,15 @@ function displayProducts(array) {
                                
                                <p class="show-details mt-2" data-bs-toggle="collapse" data-bs-target="#details${product.id}">Show Details</p>
                                <p id="details${product.id}" class="collapse text-center">${product.description}</p>
-                               <p class="mb-0">Rating:</p>
-                               <div class="rating-display">${ratingDisplay}</div>
-              
                            </div>
                            `
+
     products.appendChild(card);
+
+    let rating = calculateStars(product);  //Long function - declared separately and called here
+    card.appendChild(rating);
+
+
     const buyBtn = document.createElement("button");
     buyBtn.setAttribute("class", "btn btn-dark mt-3")
     buyBtn.setAttribute("value", product.id) //to identify
@@ -122,23 +93,69 @@ function displayProducts(array) {
     buyBtn.addEventListener("click", addToCart);
     card.appendChild(buyBtn);
 
-    const reviewDiv = document.createElement("div");
-    reviewDiv.setAttribute("id", `reviews${product.id}`);
-    reviewDiv.setAttribute("class", "collapse text-center text-bg-dark mt-2 pt-1")
-    for (review of reviews) {
-      fullStars = review.stars;
-      emptyStars = 5 - fullStars
-      for (let i = 0; i < fullStars; i++) {
-        reviewDiv.innerHTML += `<i class="fa-solid fa-star fa-xs" style="color: #ffffff;"></i>`
-      }
-      for (let i = 0; i < emptyStars; i++) {
-        reviewDiv.innerHTML += `<i class="fa-regular fa-star fa-xs" style="color: #ffffff;"></i>`
-      }
-      reviewDiv.innerHTML += `<p class="small"><em>${review.details}</em></p><hr>`
-    }
+
+    let reviewDiv = displayReviews(product) //Another function that has been separated to avoid overly long main function
     card.appendChild(reviewDiv);
   })
 }
+
+function calculateStars(product) {
+  let reviews = product.Reviews;
+  console.log("reviews ", reviews);
+  let ratingDisplay = "";
+  if (reviews.length === 0) {
+    ratingDisplay = `<p>No reviews yet</p>`
+  } else {
+    let average = reviews.reduce((acc, val) => acc + val.stars, 0) / reviews.length
+    console.log(average);
+    average = Math.round(average * 2) / 2 //rounds to nearest 0.5
+
+    let fullStars = Math.floor(average);
+    let halfStars = average - fullStars;
+    let emptyStars = 5 - Math.ceil(average);
+
+    for (let i = 0; i < fullStars; i++) {
+      ratingDisplay += `<i class="fa-solid fa-star" style="color: #ffff00;"></i>`
+    }
+    if (halfStars) {
+      ratingDisplay += `<i class="fa-regular fa-star-half-stroke" style="color: #ffff00;"></i>`
+    }
+    for (let i = 0; i < emptyStars; i++) {
+      ratingDisplay += `<i class="fa-regular fa-star" style="color: #ffff00;"></i>`
+    }
+    ratingDisplay += `<p class="read-more mt-2" data-bs-toggle="collapse" data-bs-target="#reviews${product.id}">Read more</p>
+                      <div id="reviews${product.id}" class="collapse text-center"></div>`
+  }
+
+  const rating = document.createElement("div");
+  rating.setAttribute("class", "rating-display")
+  rating.innerHTML = `<p class="mb-0">Rating:</p>${ratingDisplay}`
+  return rating;
+
+}
+
+function displayReviews(product) {
+  let reviews = product.Reviews;
+  const reviewDiv = document.createElement("div");
+  reviewDiv.setAttribute("id", `reviews${product.id}`);
+  reviewDiv.setAttribute("class", "collapse text-center text-bg-dark mt-2 pt-1")
+  for (review of reviews) {
+    let fullStars = review.stars;
+    let emptyStars = 5 - fullStars
+    for (let i = 0; i < fullStars; i++) {
+      reviewDiv.innerHTML += `<i class="fa-solid fa-star fa-xs" style="color: #ffffff;"></i>`
+    }
+    for (let i = 0; i < emptyStars; i++) {
+      reviewDiv.innerHTML += `<i class="fa-regular fa-star fa-xs" style="color: #ffffff;"></i>`
+    }
+    reviewDiv.innerHTML += `<p class="small px-2"><em>${review.details}</em></p><hr>`
+  }
+  return reviewDiv;
+}
+
+
+
+
 
 //AXIOS get products
 
@@ -312,3 +329,8 @@ for (button of dropdownCats){
   button.addEventListener("click", function(e){  //THIS is how I can pass two parameters"
     getByCategory(e, button.value)} )
 }
+
+
+
+{/* <p class="mb-0">Rating:</p> */}
+// <div class="rating-display">${ratingDisplay}</div> 

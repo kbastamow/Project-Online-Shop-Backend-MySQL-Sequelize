@@ -38,7 +38,7 @@ header img {
     transform: scale(1.5);
   }
 
-  .show-details:hover, .rating-display:hover {
+  .show-details:hover, .read-more:hover {
     font-weight: bold;
     cursor: pointer;
   }
