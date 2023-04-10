@@ -7,16 +7,12 @@ const music = document.getElementById("music")
 const dropdownCats = document.querySelectorAll(".dropdown-menu button")
 const searchForm = document.getElementById("search")
 const searchText = document.getElementById("search-text")
-console.log(dropdownCats);
-// 
-// const guitar =
-// const wind
-// const string
-// const keys
-// const allInstruments
+
 
 //Offcanvas
 const formDisplay = document.getElementById("form-display")
+const userInfo = document.getElementById("user-info")
+const cartDiv = document.getElementById("cart-div")
 
 
 //Login
@@ -37,9 +33,6 @@ const suForm = document.getElementById("signup-form");
 const formBtn = document.getElementById("reveal-form-btn");
 const pwOne = document.getElementById("password-one");
 const pwTwo = document.getElementById("password-two")
-// const name = document.getElementById("name");
-// const surname = document.getElementById("surname");
-// const suEmail = document.getElementById("signup-email");
 const suAlert = document.getElementById("signup-alert")
 const suBtn = document.getElementById("signup-btn")
 let suInputs = document.querySelectorAll('#signup-form input');
@@ -57,12 +50,12 @@ const products = document.getElementById("products")
 let user = {};
 let token = localStorage.getItem("shop_token") || "";
 let cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
-
+console.log(cart);
 
 //SHOW DIFFERENT PRODUCTS
 
 function displayProducts(array) {
-  clearDisplay()
+  clearDisplay(products)
   array.forEach(product => {
 
     //Displayin in HTML    
@@ -87,12 +80,11 @@ function displayProducts(array) {
 
 
     const buyBtn = document.createElement("button");
-    buyBtn.setAttribute("class", "btn btn-dark mt-3")
-    buyBtn.setAttribute("value", product.id) //to identify
+    buyBtn.setAttribute("class", "buy-btn btn btn-dark mt-3")
+    buyBtn.setAttribute("value", product.id) //to identify - check if necessary
     buyBtn.innerText = "Add to cart";
     buyBtn.addEventListener("click", addToCart);
     card.appendChild(buyBtn);
-
 
     let reviewDiv = displayReviews(product) //Another function that has been separated to avoid overly long main function
     card.appendChild(reviewDiv);
@@ -101,13 +93,11 @@ function displayProducts(array) {
 
 function calculateStars(product) {
   let reviews = product.Reviews;
-  console.log("reviews ", reviews);
   let ratingDisplay = "";
   if (reviews.length === 0) {
     ratingDisplay = `<p>No reviews yet</p>`
   } else {
     let average = reviews.reduce((acc, val) => acc + val.stars, 0) / reviews.length
-    console.log(average);
     average = Math.round(average * 2) / 2 //rounds to nearest 0.5
 
     let fullStars = Math.floor(average);
@@ -153,10 +143,6 @@ function displayReviews(product) {
   return reviewDiv;
 }
 
-
-
-
-
 //AXIOS get products
 
 async function getProducts(e){ 
@@ -171,10 +157,8 @@ async function getProducts(e){
     }
   }
 
-  
 async function getByCategory(e, cat) {
   e.preventDefault()
-  console.log(cat)
   try {
     const res = await axios.get(API_URL + "categories/getAllJoinProducts");
     for (category of res.data) {
@@ -184,14 +168,13 @@ async function getByCategory(e, cat) {
       }
     }
    } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
   async function search(e){
     try {
       e.preventDefault();
-      console.log(searchText.value)
       const res = await axios.get(API_URL + "products/findByName/" + searchText.value);
       const products = res.data;
       displayProducts(products)
@@ -206,30 +189,110 @@ async function getByCategory(e, cat) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //UNFINISHED
-  function addToCart(){
+  function addToCart(e){
     console.log("add this product to cart")
-  }
+    e.preventDefault();
+    const item = this.value;
+    const quantity = 1;
+    let itemObject = {item, quantity};
+
+    const index = cart.findIndex(cartItem => cartItem.item === item);
+    if (index === -1) {  //If not found, value is -1
+      cart.push(itemObject);
+    } else {
+      cart[index].quantity += 1;
+    }
+
+    console.log(cart);
+    localStorage.setItem("shopping_cart", JSON.stringify(cart));
+    displayCart()
   
+  }
+
+async function displayCart() {
+  clearDisplay(cartDiv)
+  cart = JSON.parse(localStorage.getItem("shopping_cart"));
+  const cartProducts = document.createElement("div");
+  cartProducts.setAttribute("class", "table-responsive");
+  cartProducts.innerHTML = `<table class="table table-hover">
+                                <thead>
+                                  <tr>
+                                    <th>Product</th>
+                                    <th>No</th>
+                                    <th>Price(€)</th>
+                                    <th><th>
+                                  </tr>
+                                </thead>
+                                <tbody id="table-body">
+                                </tbody>
+                              </table>
+                                `
+  cartDiv.appendChild(cartProducts);
+  let total = [];
+  const tableBody = document.getElementById("table-body");
+  try {
+    for (each of cart) {
+      let res = await axios.get(API_URL + "products/findById/" + each.item);
+      let product = res.data.name;
+      let price = res.data.price * each.quantity;
+      total.push(price);
+      tableBody.innerHTML += `<tr>
+                                <td>${product}</td>
+                                <td><span class="click" onClick="decrease()"><i class="fa-solid fa-circle-plus" style="color: #000000;"></i></span>
+                                <span class="p-2">${each.quantity}</span>
+                                <span class="click" onClick="increase()"><i class="fa-solid fa-circle-minus" style="color: #000000;"></i></td></span>
+                                <td>${price}</td>
+                                <td><button class="btn btn-dark btn-sm">delete</button></td>
+                                </tr>
+                                 `
+    }
+    total = total.reduce((acc, val) => acc + val);
+    console.log(total);
+    tableBody.innerHTML += `<tr class="fw-bold">
+                            <td>Total</td>
+                            <td></td>
+                            <td>${total}</td>
+                            <td><button id="checkout" class="btn btn-success btn-sm">Place order</button></td>
+                            </tr>
+                            `
+    const emptyCartBtn = document.createElement("button")
+    emptyCartBtn.setAttribute("class", "btn btn-danger me-2")
+    emptyCartBtn.innerText = "Clear cart"
+    const logoutBtn = document.createElement("button")
+    logoutBtn.setAttribute("class", "btn btn-dark")
+    logoutBtn.innerText = "Logout";
+
+
+    // logoutBtn.addEventListener("click", logout);
+    userInfo.appendChild(emptyCartBtn);
+    userInfo.appendChild(logoutBtn);
+
+  } catch (err) {
+    console.error(err);
+  }
+
+}
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 async function login(e) {
-  console.log("login" + email.value + " " + password.value);
   e.preventDefault();
   try {
-    console.log(API_URL + "users/login")
     const res = await axios.post(API_URL + "users/login", {
       email: email.value,
       password: password.value
@@ -237,11 +300,9 @@ async function login(e) {
     localStorage.setItem("shop_token", res.data.token);
     token = res.data.token;
     user = res.data.user
-    console.log(res.data.user);
-    console.log(user);
     welcome();
   } catch (err) {
-    console.log(err);
+    console.error(err);
     loginAlert.setAttribute("class", "alert alert-danger p-2" )
     loginAlert.textContent = "Incorrect email/password"; //WHY IS THIS DISPLAYING ANYWAy?
     setTimeout(function () {
@@ -252,23 +313,19 @@ async function login(e) {
   }
 }
 
-//I'm HERE!
-
 
 function welcome() {
   console.log(formDisplay);
   formDisplay.setAttribute("datahide", "hidden");
-  
-  const offcanvasBody = document.querySelector(".offcanvas-body");
-  console.log(offcanvasBody);
-  let userInfo = document.createElement("div");
-  userInfo.innerHTML = `<h4 class="text-center"> Welcome, ${user.name}</h4>`
-  offcanvasBody.appendChild(userInfo) 
-  console.log(user.name);
   console.log(userInfo);
+  userInfo.removeAttribute("datahide");
+  document.querySelector("#user-info h4").textContent = `Welcome, ${user.name}`
   
   if (cart.length === 0){
-  userInfo.innerHTML += `<p>There are no product in your cart</p>`;
+  userInfo.innerHTML += `<p class="small">There are no product in your cart</p>`;
+  } 
+  else {
+    displayCart()
   }
 
 }
@@ -310,9 +367,9 @@ function enableSubmit(inputs, btn) {
 
 
 
-function clearDisplay(){
-  while (products.firstChild){
-  products.removeChild(products.firstChild);
+function clearDisplay(parent){
+  while (parent.firstChild){
+  parent.removeChild(parent.firstChild);
   }
 }
 
@@ -332,5 +389,3 @@ for (button of dropdownCats){
 
 
 
-{/* <p class="mb-0">Rating:</p> */}
-// <div class="rating-display">${ratingDisplay}</div> 

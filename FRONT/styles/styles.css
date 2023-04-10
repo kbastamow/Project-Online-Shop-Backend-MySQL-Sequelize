@@ -43,4 +43,6 @@ header img {
     cursor: pointer;
   }
 
-  
+  .click:hover {
+    cursor: pointer;
+  }
