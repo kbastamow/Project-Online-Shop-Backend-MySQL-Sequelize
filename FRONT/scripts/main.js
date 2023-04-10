@@ -62,38 +62,83 @@ let cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
 //SHOW DIFFERENT PRODUCTS
 
 function displayProducts(array) {
-  clearDisplay() 
+  clearDisplay()
   array.forEach(product => {
-     let card = document.createElement("div");
-     card.setAttribute("class", "card m-3 p-2 col-2 text-center bg-danger");
-     card.innerHTML = `<h4 class="card-title mb-3 bg-black text-bg-dark p-2">${product.name}</h4>
+    //Extracting reviews
+
+    let reviews = product.Reviews;
+    console.log("reviews ", reviews);
+    // const rating = document.getElementById("rating");
+    let ratingDisplay = "";
+
+    if (reviews.length === 0) {
+      ratingDisplay = `<p>No reviews yet</p>`
+    } else {
+      let average = reviews.reduce((acc, val) => acc + val.stars, 0) / reviews.length
+      console.log(average);
+      average = Math.round(average * 2) / 2 //rounds to nearest 0.5
+
+      let fullStars = Math.floor(average);
+      let halfStars = average - fullStars;
+      let emptyStars = 5 - Math.ceil(average);
+   
+      for (let i = 0; i < fullStars; i++) {
+        ratingDisplay += `<i class="fa-solid fa-star" style="color: #ffff00;"></i>`
+      }
+      if (halfStars) {
+        ratingDisplay += `<i class="fa-regular fa-star-half-stroke" style="color: #ffff00;"></i>`
+      }
+      for (let i = 0; i < emptyStars; i++) {
+        ratingDisplay += `<i class="fa-regular fa-star" style="color: #ffff00;"></i>`
+      }
+        ratingDisplay += `<p class="read-more mt-2" data-bs-toggle="collapse" data-bs-target="#reviews${product.id}">Read more</p>
+                      <div id="reviews${product.id}" class="collapse text-center"></div>`
+    }
+
+    
+
+    //Displayin in HTML    
+    let card = document.createElement("div");
+    card.setAttribute("class", "card m-3 p-2 col-2 text-center bg-danger");
+    card.innerHTML = `<h4 class="card-title mb-3 bg-black text-bg-dark p-2">${product.name}</h4>
                            <div class="image-zoom">
                                <img src="${product.image}" class="w-100" />
                            </div>
                            <div class="card-body">
                                <h5 class="mb-3">${product.price}€</h5>
                                
-                               <p id="show-details" class="mt-2" data-bs-toggle="collapse" data-bs-target="#details">Show Details</p>
-                               <p id="details" class="collapse">${product.description}</p>
+                               <p class="show-details mt-2" data-bs-toggle="collapse" data-bs-target="#details${product.id}">Show Details</p>
+                               <p id="details${product.id}" class="collapse text-center">${product.description}</p>
                                <p class="mb-0">Rating:</p>
-                               <i class="fa-solid fa-star" style="color: #ffff00;"></i>
-                               <i class="fa-solid fa-star" style="color: #ffff00;"></i>
-                               <i class="fa-solid fa-star" style="color: #ffff00;"></i>
-                               <i class="fa-solid fa-star" style="color: #ffff00;"></i>
-                               <i class="fa-solid fa-star" style="color: #ffff00;"></i>
-                                      
+                               <div class="rating-display">${ratingDisplay}</div>
+              
                            </div>
-                        `
-     products.appendChild(card);
-     const buyBtn = document.createElement("button");
-     buyBtn.setAttribute("class", "btn btn-dark mt-3")
-     buyBtn.setAttribute("value", product.id) //to identify
-     buyBtn.innerText = "Add to cart";
-     buyBtn.addEventListener("click", addToCart);
-     card.appendChild(buyBtn);
+                           `
+    products.appendChild(card);
+    const buyBtn = document.createElement("button");
+    buyBtn.setAttribute("class", "btn btn-dark mt-3")
+    buyBtn.setAttribute("value", product.id) //to identify
+    buyBtn.innerText = "Add to cart";
+    buyBtn.addEventListener("click", addToCart);
+    card.appendChild(buyBtn);
 
-   })
- }
+    const reviewDiv = document.createElement("div");
+    reviewDiv.setAttribute("id", `reviews${product.id}`);
+    reviewDiv.setAttribute("class", "collapse text-center text-bg-dark mt-2 pt-1")
+    for (review of reviews) {
+      fullStars = review.stars;
+      emptyStars = 5 - fullStars
+      for (let i = 0; i < fullStars; i++) {
+        reviewDiv.innerHTML += `<i class="fa-solid fa-star fa-xs" style="color: #ffffff;"></i>`
+      }
+      for (let i = 0; i < emptyStars; i++) {
+        reviewDiv.innerHTML += `<i class="fa-regular fa-star fa-xs" style="color: #ffffff;"></i>`
+      }
+      reviewDiv.innerHTML += `<p class="small"><em>${review.details}</em></p><hr>`
+    }
+    card.appendChild(reviewDiv);
+  })
+}
 
 //AXIOS get products
 

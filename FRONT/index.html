@@ -75,7 +75,7 @@
                 <!-- Login form -->
                 <form id="login-form">
                     <h5 class="text-center">Login to your account</h5>
-                    <div id="login-alert">hhh</div>
+                    <div id="login-alert"></div>
     
     
                     <div class="form-outline mb-2">
@@ -130,7 +130,7 @@
     <main>
         <div id="products" class="d-flex flex-wrap">
           
-            <div class="card m-3 p-2 col-2 text-center bg-danger">
+            <div class="card m-3 p-2 col-3 text-center bg-danger">
                 <h4 class="card-title mb-3 bg-black text-bg-dark p-2">Electric guitar</h4>
                 <div class="image-zoom">
                   <img src="./assets/guitarproduct.jpg"
@@ -147,7 +147,20 @@
                     <i class="fa-solid fa-star" style="color: #ffff00;"></i>
                     <i class="fa-solid fa-star" style="color: #ffff00;"></i>
                     <i class="fa-solid fa-star" style="color: #ffff00;"></i>
-                    <button id="buy-btn" class="btn btn-dark mt-3">Add to cart</button>            
+
+                    <p class="read-more mt-2" data-bs-toggle="collapse" data-bs-target="#review-example">Read more</p>
+                  
+                    <button id="buy-btn" class="btn btn-dark mt-3">Add to cart</button> 
+                    <div id="review-example" class="collapse text-center text-bg-dark mt-2 pt-1">
+                        <i class="fa-solid fa-star" style="color: #ffff00;"></i>
+                         <i class="fa-solid fa-star" style="color: #ffff00;"></i>
+                         <i class="fa-solid fa-star" style="color: #ffff00;"></i>
+                         <i class="fa-regular fa-star-half-stroke" style="color: #ffff00;"></i>
+                         <i class="fa-regular fa-star" style="color: #ffff00;"></i>
+                         <p>A really good quality for a reasonable price</p>
+                         <hr>
+                    </div>
+                    
                 </div>
               </div>
 
@@ -158,11 +171,18 @@
                     class="w-100" />
                 </div>
                 <div class="card-body">
-                 
-                   
-                
+        
                   <h5 class="mb-3">$61.99</h5>
-                    <p>Stars</p>
+                  <p class="mb-0">Rating:</p>
+                  <i class="fa-solid fa-star" style="color: #ffff00;"></i>
+                  <i class="fa-solid fa-star" style="color: #ffff00;"></i>
+                  <i class="fa-solid fa-star" style="color: #ffff00;"></i>
+                  <i class="fa-regular fa-star-half-stroke" style="color: #ffff00;"></i>
+                  <i class="fa-regular fa-star" style="color: #ffff00;"></i>
+                  
+
+
+                      </div>
                     <button id="buy-btn" class="btn btn-dark">Add to cart</button>            
                 </div>
               </div>
@@ -217,3 +237,6 @@
 </body>
 
 </html>
+<!-- 
+<i class="fa-regular fa-star-half-stroke" style="color: #ffff00;"></i>
+<i class="fa-regular fa-star" style="color: #ffff00;"></i> -->
