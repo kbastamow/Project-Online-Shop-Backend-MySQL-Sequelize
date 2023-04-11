@@ -59,7 +59,19 @@ const ProductController = {
             res.status(500).send(error)
         }
     },
-    
+
+  async findVarious(req,res) {
+    try{
+        const products = await Product.findAll({
+            where: { id: req.body.id }   //req body should be an array
+            })
+        res.send(products);
+    } catch(error) {
+        console.error(error);
+        res.status(500).send(error)
+    }
+  },
+
     async findByName(req,res) {  //COULD ADD here a search function by category TOO!
         try{
             const product = await Product.findAll({

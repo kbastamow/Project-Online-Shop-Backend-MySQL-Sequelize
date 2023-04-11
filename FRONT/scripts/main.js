@@ -49,10 +49,151 @@ const products = document.getElementById("products")
 
 let user = {};
 let token = localStorage.getItem("shop_token") || "";
-let cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
-console.log(cart);
+let cart = []; //JSON.parse(localStorage.getItem("shopping_cart")) || [];
 
-//SHOW DIFFERENT PRODUCTS
+let idArray = [];
+let productInfo = []; //save information of cart's products in array
+let total = 0;
+
+//Get cart's product info from server
+async function getProductInfo(){
+   cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
+   if (cart.length === 0){
+    return userInfo.innerHTML += `<p class="small">There are no product in your cart</p>`;
+    } 
+    
+   cart.forEach(each => idArray.push(+each.item));
+   console.log(idArray);  
+   try {
+    const res = await axios.post(API_URL + "products/findVarious", {
+      id: idArray
+    })
+    productInfo = res.data;
+    console.log(productInfo);
+   } catch(error){
+    console.error(error)
+   }
+
+   displayCart()
+}
+
+
+
+
+ 
+function displayCart() {  //Doesn't call server, uses variable productInfo
+  clearDisplay(cartDiv)
+  const cartProducts = document.createElement("div");
+  cartProducts.setAttribute("class", "table-responsive");
+  cartProducts.innerHTML = `<table class="table table-hover">
+                                <thead>
+                                  <tr>
+                                    <th>Product</th>
+                                    <th>No</th>
+                                    <th>Price(€)</th>
+                                    <th><th>
+                                  </tr>
+                                </thead>
+                                <tbody id="table-body">
+                                </tbody>
+                              </table>
+                                `
+  cartDiv.appendChild(cartProducts);
+  const tableBody = document.getElementById("table-body");
+
+  for(each of productInfo) {
+      const index = cart.findIndex(cartItem => (+cartItem.item) === each.id)
+      const quantity = cart[index].quantity;
+      const price = each.price * quantity;
+    
+       //Creating a row
+      const tableRow = document.createElement("tr")
+      tableRow.setAttribute("id",`product${each.id}`);
+      tableRow.innerHTML = `<td>${each.name}</td>
+                            <td><span class="click" onClick="decrease())"><i class="fa-solid fa-circle-plus" style="color: #000000;"></i></span>
+                            <span class="p-2">${quantity}</span>
+                            <span class="click" onClick="increase()"><i class="fa-solid fa-circle-minus" style="color: #000000;"></i></td></span>
+                            <td>${price}</td>
+                            <td><button class="btn btn-dark btn-sm" onClick="remove(event, ${each.id})">Remove</button></td>
+                          `
+      tableBody.appendChild(tableRow);
+  }
+
+
+
+    total = calculateTotal()
+    console.log(total);
+    tableBody.innerHTML += `<tr class="fw-bold">
+                            <td></td>
+                            <td>Total</td>
+                            <td id="total-price">${total}</td>
+                            <td><button id="checkout" class="btn btn-success btn-sm">Place order</button></td>
+                            </tr>
+                            `
+    const emptyCartBtn = document.createElement("button")
+    emptyCartBtn.setAttribute("class", "btn btn-danger me-2")
+    emptyCartBtn.innerText = "Clear cart"
+    const logoutBtn = document.createElement("button")
+    logoutBtn.setAttribute("class", "btn btn-dark")
+    logoutBtn.innerText = "Logout";
+  
+
+    logoutBtn.addEventListener("click", logout);
+    userInfo.appendChild(emptyCartBtn);
+    userInfo.appendChild(logoutBtn);
+
+  }
+
+
+
+
+
+
+
+ 
+function remove(event, id){   //I'm passing two values
+  event.preventDefault();
+  const row = document.getElementById("product" + id);
+  console.log(row);
+  row.remove();
+  
+  productInfo = productInfo.filter(value => value.id !== id); //update current products array
+  
+  console.log(productInfo);
+  console.log(cart);
+ 
+  cart = cart.filter(value => +value.item !== id); //Update local storage and cart
+  localStorage.setItem("shopping_cart", JSON.stringify(cart)); 
+  
+  total = calculateTotal(); 
+  const totalPrice = document.getElementById("total-price")
+  totalPrice.textContent = total;
+  console.log(cart)
+}
+
+//Calculate current Total of cart items
+function calculateTotal(){
+  let prices = [];
+  for(each of productInfo) {
+    const index = cart.findIndex(cartItem => (+cartItem.item) === each.id)
+    const quantity = cart[index].quantity;
+    const price = each.price * quantity;
+    prices.push(price);
+}
+  return prices.reduce((acc, val) => acc + val);
+}
+
+
+
+
+function logout(){
+  console.log("Write logout function");
+}
+
+
+
+
+//Display Catalogue of products
 
 function displayProducts(array) {
   clearDisplay(products)
@@ -183,12 +324,6 @@ async function getByCategory(e, cat) {
     }
   }
   
-
-
-
-
-
-
 //UNFINISHED
   function addToCart(e){
     console.log("add this product to cart")
@@ -209,83 +344,6 @@ async function getByCategory(e, cat) {
     displayCart()
   
   }
-
-async function displayCart() {
-  clearDisplay(cartDiv)
-  cart = JSON.parse(localStorage.getItem("shopping_cart"));
-  const cartProducts = document.createElement("div");
-  cartProducts.setAttribute("class", "table-responsive");
-  cartProducts.innerHTML = `<table class="table table-hover">
-                                <thead>
-                                  <tr>
-                                    <th>Product</th>
-                                    <th>No</th>
-                                    <th>Price(€)</th>
-                                    <th><th>
-                                  </tr>
-                                </thead>
-                                <tbody id="table-body">
-                                </tbody>
-                              </table>
-                                `
-  cartDiv.appendChild(cartProducts);
-  let total = [];
-  const tableBody = document.getElementById("table-body");
-  try {
-    for (each of cart) {
-      let res = await axios.get(API_URL + "products/findById/" + each.item);
-      let product = res.data.name;
-      let price = res.data.price * each.quantity;
-      total.push(price);
-      tableBody.innerHTML += `<tr>
-                                <td>${product}</td>
-                                <td><span class="click" onClick="decrease()"><i class="fa-solid fa-circle-plus" style="color: #000000;"></i></span>
-                                <span class="p-2">${each.quantity}</span>
-                                <span class="click" onClick="increase()"><i class="fa-solid fa-circle-minus" style="color: #000000;"></i></td></span>
-                                <td>${price}</td>
-                                <td><button class="btn btn-dark btn-sm">delete</button></td>
-                                </tr>
-                                 `
-    }
-    total = total.reduce((acc, val) => acc + val);
-    console.log(total);
-    tableBody.innerHTML += `<tr class="fw-bold">
-                            <td>Total</td>
-                            <td></td>
-                            <td>${total}</td>
-                            <td><button id="checkout" class="btn btn-success btn-sm">Place order</button></td>
-                            </tr>
-                            `
-    const emptyCartBtn = document.createElement("button")
-    emptyCartBtn.setAttribute("class", "btn btn-danger me-2")
-    emptyCartBtn.innerText = "Clear cart"
-    const logoutBtn = document.createElement("button")
-    logoutBtn.setAttribute("class", "btn btn-dark")
-    logoutBtn.innerText = "Logout";
-
-
-    // logoutBtn.addEventListener("click", logout);
-    userInfo.appendChild(emptyCartBtn);
-    userInfo.appendChild(logoutBtn);
-
-  } catch (err) {
-    console.error(err);
-  }
-
-}
-
-
-  
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -320,13 +378,13 @@ function welcome() {
   console.log(userInfo);
   userInfo.removeAttribute("datahide");
   document.querySelector("#user-info h4").textContent = `Welcome, ${user.name}`
-  
-  if (cart.length === 0){
-  userInfo.innerHTML += `<p class="small">There are no product in your cart</p>`;
-  } 
-  else {
-    displayCart()
-  }
+  getProductInfo();
+  // if (cart.length === 0){
+  // userInfo.innerHTML += `<p class="small">There are no product in your cart</p>`;
+  // } 
+  // else {
+  //   displayCart()
+  // }
 
 }
 
