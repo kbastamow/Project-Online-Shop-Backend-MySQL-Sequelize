@@ -4,7 +4,13 @@ const PORT = 3000;
 app.use(express.json());
 const { typeError } = require('./middleware/errors');
 const cors = require("cors")
-app.use(cors());
+const corsOptions = {
+    origin:'*', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200,
+ }
+
+app.use(cors(corsOptions));
 
 
 app.use("/users", require("./routes/users"));

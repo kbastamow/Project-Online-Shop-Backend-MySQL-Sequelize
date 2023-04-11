@@ -186,9 +186,47 @@ function calculateTotal(){
 
 
 
-function logout(){
-  console.log("Write logout function");
+async function logout(e){
+  e.preventDefault();
+  const token = localStorage.getItem("shop_token");
+  try {
+      await axios.put(API_URL + "users/logout", {}, {
+      headers: {
+        "Authorization": token
+      }
+    });
+     console.log("success")
+     localStorage.removeItem("shop_token");
+     userInfo.setAttribute("datahide", "hidden");
+     formDisplay.removeAttribute("datahide"); 
+    } catch(error){
+    console.error(error);
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -355,6 +393,8 @@ async function login(e) {
       email: email.value,
       password: password.value
     });
+    email.value = "";
+    password.value = "";  //reset fields so info doesn´t show on logout
     localStorage.setItem("shop_token", res.data.token);
     token = res.data.token;
     user = res.data.user
