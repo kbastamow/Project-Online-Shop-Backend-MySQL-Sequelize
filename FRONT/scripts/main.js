@@ -13,6 +13,7 @@ const searchText = document.getElementById("search-text")
 const formDisplay = document.getElementById("form-display")
 const userInfo = document.getElementById("user-info")
 const cartDiv = document.getElementById("cart-div")
+const logoutBtn = document.getElementById("logout-btn");
 
 
 //Login
@@ -51,19 +52,24 @@ let user = {};
 let token = localStorage.getItem("shop_token") || "";
 let cart = []; //JSON.parse(localStorage.getItem("shopping_cart")) || [];
 
-let idArray = [];
+
 let productInfo = []; //save information of cart's products in array
 let total = 0;
+
+
+
 
 //Get cart's product info from server
 async function getProductInfo(){
    cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
    if (cart.length === 0){
-    return userInfo.innerHTML += `<p class="small">There are no product in your cart</p>`;
-    } 
-    
+    const msg = document.createElement("p")
+    msg.textContent = "There are no products in your cart"
+    cartDiv.appendChild(msg);
+    return;
+    }
+   let idArray = [];
    cart.forEach(each => idArray.push(+each.item));
-   console.log(idArray);  
    try {
     const res = await axios.post(API_URL + "products/findVarious", {
       id: idArray
@@ -74,7 +80,7 @@ async function getProductInfo(){
     console.error(error)
    }
 
-   displayCart()
+    displayCart()
 }
 
 
@@ -133,21 +139,13 @@ function displayCart() {  //Doesn't call server, uses variable productInfo
     const emptyCartBtn = document.createElement("button")
     emptyCartBtn.setAttribute("class", "btn btn-danger me-2")
     emptyCartBtn.innerText = "Clear cart"
-    const logoutBtn = document.createElement("button")
-    logoutBtn.setAttribute("class", "btn btn-dark")
-    logoutBtn.innerText = "Logout";
-  
-
-    logoutBtn.addEventListener("click", logout);
-    userInfo.appendChild(emptyCartBtn);
-    userInfo.appendChild(logoutBtn);
+    emptyCartBtn.addEventListener("click", clearCart);
+    
+   
+    cartDiv.appendChild(emptyCartBtn);
+    
 
   }
-
-
-
-
-
 
 
  
@@ -196,6 +194,9 @@ async function logout(e){
       }
     });
      console.log("success")
+     clearDisplay(cartDiv);
+     user = {};
+     console.log(user);
      localStorage.removeItem("shop_token");
      userInfo.setAttribute("datahide", "hidden");
      formDisplay.removeAttribute("datahide"); 
@@ -204,7 +205,15 @@ async function logout(e){
   }
 }
 
+function clearCart(){
+  localStorage.removeItem("shopping_cart");
+  productInfo = [];
+  // idArray = []  //Changed to local variable
+  clearDisplay(cartDiv);
+  welcome();  //displays offacanvas message;
 
+
+}
 
 
 
@@ -362,22 +371,29 @@ async function getByCategory(e, cat) {
     }
   }
   
-//UNFINISHED
-  function addToCart(e){
-    console.log("add this product to cart")
+
+  async function addToCart(e){
     e.preventDefault();
+    if (Object.entries(user).length === 0) {
+      console.log('obj is empty');
+      return alert("Log in to continue shopping!");   //Change to prettier style!
+    }    
     const item = this.value;
     const quantity = 1;
     let itemObject = {item, quantity};
 
     const index = cart.findIndex(cartItem => cartItem.item === item);
-    if (index === -1) {  //If not found, value is -1
+    if (index === -1) {  //If not found, value is -1. Retrieve from server.
       cart.push(itemObject);
-    } else {
+      try{
+        const res = await axios.get(API_URL + "products/findById/" + item)
+        productInfo.push(res.data);
+      }catch(error){
+        console.error(error)
+      }
+    } else {  //Else simply increase quantity
       cart[index].quantity += 1;
     }
-
-    console.log(cart);
     localStorage.setItem("shopping_cart", JSON.stringify(cart));
     displayCart()
   
@@ -397,7 +413,7 @@ async function login(e) {
     password.value = "";  //reset fields so info doesn´t show on logout
     localStorage.setItem("shop_token", res.data.token);
     token = res.data.token;
-    user = res.data.user
+    user = res.data.user;
     welcome();
   } catch (err) {
     console.error(err);
@@ -413,12 +429,13 @@ async function login(e) {
 
 
 function welcome() {
-  console.log(formDisplay);
   formDisplay.setAttribute("datahide", "hidden");
-  console.log(userInfo);
   userInfo.removeAttribute("datahide");
   document.querySelector("#user-info h4").textContent = `Welcome, ${user.name}`
-  getProductInfo();
+  logoutBtn.addEventListener("click", logout);
+  getProductInfo();   //clears cart variable and displays empty cart message
+ 
+ 
   // if (cart.length === 0){
   // userInfo.innerHTML += `<p class="small">There are no product in your cart</p>`;
   // } 
@@ -463,7 +480,7 @@ function enableSubmit(inputs, btn) {
 
 
 
-
+//Helper functions
 
 function clearDisplay(parent){
   while (parent.firstChild){
