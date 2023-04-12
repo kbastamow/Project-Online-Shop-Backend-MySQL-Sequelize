@@ -77,6 +77,9 @@ const ProductController = {
             const product = await Product.findAll({
                 where: {
                     name: { [Op.like]:`%${req.params.name}%`}
+                },
+                include: {
+                    model: Review
                 }
             });
             if(!product){

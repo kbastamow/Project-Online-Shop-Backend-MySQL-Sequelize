@@ -4,7 +4,7 @@ const API_URL = "http://localhost:3000/";
 const productBtn = document.getElementById("product-btn")
 const accessories = document.getElementById("accessories")
 const music = document.getElementById("music")
-const dropdownCats = document.querySelectorAll(".dropdown-menu button")
+const dropdownCats = document.querySelectorAll(".dropdown-item")
 const searchForm = document.getElementById("search")
 const searchText = document.getElementById("search-text")
 
@@ -44,7 +44,7 @@ for (let i = 0; i < suInputs.length; i++) {
   }
 
 //Main
-const products = document.getElementById("products")
+const productsDiv = document.getElementById("products")
 
 //Global variables:
 
@@ -181,9 +181,6 @@ function calculateTotal(){
   return prices.reduce((acc, val) => acc + val);
 }
 
-
-
-
 async function logout(e){
   e.preventDefault();
   const token = localStorage.getItem("shop_token");
@@ -231,15 +228,6 @@ function clearCart(){
 
 
 
-
-
-
-
-
-
-
-
-
 //Display Catalogue of products
 
 function displayProducts(array) {
@@ -261,7 +249,7 @@ function displayProducts(array) {
                            </div>
                            `
 
-    products.appendChild(card);
+    productsDiv.appendChild(card);
 
     let rating = calculateStars(product);  //Long function - declared separately and called here
     card.appendChild(rating);
@@ -281,6 +269,7 @@ function displayProducts(array) {
 
 function calculateStars(product) {
   let reviews = product.Reviews;
+  console.log(product.Reviews);
   let ratingDisplay = "";
   if (reviews.length === 0) {
     ratingDisplay = `<p>No reviews yet</p>`
@@ -347,18 +336,28 @@ async function getProducts(e){
 
 async function getByCategory(e, cat) {
   e.preventDefault()
+  console.log("current category is " + cat);
   try {
     const res = await axios.get(API_URL + "categories/getAllJoinProducts");
-    for (category of res.data) {
-      if (category.name == cat) {
-        let products = category.Products;
-        displayProducts(products)
-      }
+    const category = (res.data).find(obj => obj.name === cat);
+    if (category && category.Products.length > 0) {
+      let products = category.Products;
+      return displayProducts(products)
+    } else {
+      const notFound = document.createElement("div");
+      notFound.setAttribute("class", "alert alert-primary w-100");
+      notFound.textContent = `No products in category "${cat}"`
+      productsDiv.insertBefore(notFound, productsDiv.firstChild);
+      setTimeout(function () {
+        productsDiv.removeChild(productsDiv.firstElementChild);
+      }, 4000);
+
     }
-   } catch (err) {
-      console.error(err);
-    }
+  } catch (err) {
+    console.error(err);
   }
+}
+
 
   async function search(e){
     try {
@@ -434,14 +433,6 @@ function welcome() {
   document.querySelector("#user-info h4").textContent = `Welcome, ${user.name}`
   logoutBtn.addEventListener("click", logout);
   getProductInfo();   //clears cart variable and displays empty cart message
- 
- 
-  // if (cart.length === 0){
-  // userInfo.innerHTML += `<p class="small">There are no product in your cart</p>`;
-  // } 
-  // else {
-  //   displayCart()
-  // }
 
 }
 
@@ -495,12 +486,15 @@ suForm.addEventListener("submit", register);
 formBtn.addEventListener("click", revealForm);
 accessories.addEventListener("click", function(e){  //THIS is how I can pass two parameters"
   getByCategory(e, "Accessories")} )
-music.addEventListener("click", function(e){  //THIS is how I can pass two parameters"
+music.addEventListener("click", function(e){  
   getByCategory(e, "Sheet music")} )
-for (button of dropdownCats){
-  button.addEventListener("click", function(e){  //THIS is how I can pass two parameters"
-    getByCategory(e, button.value)} )
-}
+
+for (let i = 0; i < dropdownCats.length; i++) {  //For  - of doesn't work well with eventListeners!
+    const button = dropdownCats[i];
+    button.addEventListener("click", function(e) {
+      getByCategory(e, button.value);
+    });
+  }
 
 
 
