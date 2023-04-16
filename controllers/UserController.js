@@ -8,7 +8,7 @@ const transporter = require("../config/nodemailer");
 
 const UserController = {
     //CREATE NEW USER
-    async create(req, res, next) {
+    async create(req, res, next) {  //NEXT parameter delegates the error handling to middleware
         req.body.role = "user"; //default
         try {
             const password = await bcrypt.hash(req.body.password, 10);
@@ -61,7 +61,7 @@ const UserController = {
                 where: { email: req.body.email }
             });
             if (!user) {
-                return res.status(400).send("Incorrect email or password");//return so the code breaks here
+                return res.status(400).send("Incorrect email or password"); //return so the code breaks here
             }
             if (!user.confirmed) {  //check if user has confirmed their registration by email link
                 return res.status(400).send({ msg: "Check your email to complete your registration" })
@@ -82,9 +82,7 @@ const UserController = {
 
     //logout
     async logout(req, res) {  //Create authentication before creating logout, so req.user.id doesn't appear undefined
-        console.log(req.user);
         try {
-            console.log(req.headers.authorization);
             await Token.destroy({   //destroying the token
                 where: {
                     [Op.and]: [
@@ -129,7 +127,7 @@ const UserController = {
         }
     },
 
-     //See orders and products but with fewer details
+    //See orders and products but with fewer details
     async getUserJoinOrdersConcise(req, res) {
         try {
             const user = await User.findByPk(req.params.id, {
@@ -147,7 +145,7 @@ const UserController = {
         }
     },
 
-     //Update User
+    //Update User
     async updateById(req, res) {
         try {
             const foundUser = await User.findOne({    //FIRST we check if the user with that Id actually exists!
@@ -184,13 +182,6 @@ const UserController = {
             res.status(500).send(error)
         }
     }
-
-
-
-
-
-
-
 
 }
 

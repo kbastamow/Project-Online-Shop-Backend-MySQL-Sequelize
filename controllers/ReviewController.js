@@ -66,12 +66,10 @@ const ReviewController = {
 
         async deleteById(req, res) {
             try {
-                console.log("HELLO1")
                 const review = await Review.findByPk(req.params.id);
                 if (review.UserId !== req.user.id) {
                     return res.status(401).send("Not authorised to delete this review");
                 }
-                console.log("HELLO2")
                 await review.destroy();
                 res.send({msg: `Review deleted`, review})
 

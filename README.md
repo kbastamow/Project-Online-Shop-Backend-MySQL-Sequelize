@@ -182,13 +182,21 @@ const { Op } = Sequelize;
 const { Category, Product, Category_Product, Review, Sequelize } = require("../models/index.js");
 ```
 
-```JS
+```js
 ...
     const category = await Category.findAll({
         where: {
             name: { [Op.like]: `%${req.params.name}%` }
         }
     })
+```
+
+```js
+    const products = await Product.findAll({
+        where: {
+            price: { [Op.between]: [(+req.params.price - 50), (+req.params.price + 50)] } //RANGE +- hundred  
+                }
+            });
 ```
 
 ## ↕️ Ordering results

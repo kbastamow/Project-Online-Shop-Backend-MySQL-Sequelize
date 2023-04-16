@@ -19,7 +19,7 @@ const authentication = async (req, res, next ) => {
     req.user = user; //THIS ONE IS USED IN controllers
     next();
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).send({ error, msg: "Problem with token" });
   }
 };
@@ -41,7 +41,6 @@ const isAdmin = async (req, res, next) => {
 }
 }
 
-
 //Check superAdmin
 
 const isSuperAdmin = async (req, res, next) => {
@@ -60,6 +59,3 @@ const isSuperAdmin = async (req, res, next) => {
 
 
 module.exports = { authentication, isAdmin, isSuperAdmin }; //this is an object
-
-
-// || !role === "superadmin"

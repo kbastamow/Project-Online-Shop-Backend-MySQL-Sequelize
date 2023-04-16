@@ -13,7 +13,7 @@ const OrderController = {
                     return res.status(404).send({ msg: `Product with id ${pair.ProductId} not found.` })
                 }
             };
-            const order = await Order.create({...req.body, UserId: req.user.id})
+            const order = await Order.create({ ...req.body, UserId: req.user.id })
             orderArray.forEach(pair => {
                 order.addProduct(pair.ProductId, { through: { quantity: pair.quantity } })  //THROUGH ACCESSES OTHER COlUMNS IN JUNCTION TABLE
             })
@@ -23,26 +23,24 @@ const OrderController = {
             res.status(500).send(error);
         }
     },
-//Selecting only certain information to view
+    //Selecting only certain information to view
     async getAllJoinProducts(req, res) {
         try {
             const orders = await Order.findAll({
                 attributes: [["id", "Order ID"]], //second value is alias
                 include: [{ model: Product, attributes: ["name"], through: { model: Order_Product, attributes: ["quantity"] } }]
             })
-            console.log(req.user.role)
             res.send(orders);
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(500).send(error);
         }
     },
 
-      //See my orders and products - for users
+    //See my orders and products - for users
 
     async getMyOrders(req, res) {
         try {
-            console.log("This is user" + req.user.id)
             const orders = await Order.findAll({
                 where: {
                     UserId: req.user.id

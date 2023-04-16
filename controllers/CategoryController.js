@@ -2,7 +2,7 @@ const { Category, Product, Category_Product, Sequelize } = require("../models/in
 const { Op } = Sequelize; 
 
 const CategoryController = {
-   
+
     async create(req, res) {
         try {
             const category = await Category.create(req.body);
