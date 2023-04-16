@@ -8,25 +8,25 @@ The aim of the project was to create a backend for an imaginary online shop usin
 
 The obligatory requirements for completing the exercice consist of:
 
->-[x] At least four tables with one-to-many and many-to-many associations (Users, Products, Categories, Orders) and a diagram to visualise the relations.
->-[x] User registration and password encryption with **Bcrypt**
->-[x] Login with **JSON Web tokens** and the use of middleware
->-[x] A variety of CRUD endpoints
->-[x] Data validation
->-[x] Seeders to create data
+- [x] At least four tables with one-to-many and many-to-many associations (Users, Products, Categories, Orders) and a diagram to visualise the relations.
+- [x] User registration and password encryption with **Bcrypt**
+- [x] Login with **JSON Web tokens** and the use of middleware
+- [x] A variety of CRUD endpoints
+- [x] Data validation
+- [x] Seeders to create data
 
 Optional:
 
->-[x] Admin and Superadmin roles
->-[x] Email confirmation on registration using **Nodemailer**
->-[x] An extra table of Reviews associated to Products and Users
->-[ ] **Multer** to facilitate the uploading of images
+- [x]  Admin and Superadmin roles
+- [x] Email confirmation on registration using **Nodemailer**  
+- [x]  An extra table of Reviews associated to Products and Users  
+- [x]  **Multer** to facilitate the uploading of images
 
 Extras that I added:
 
->-[x] Extra endpoints to visualise data in different ways to consolidate the use of *inlude*, *through*, column aliases 
->-[x] An endpoint for an admin to approve of reviews before their publication
->-[x] Front. A single page application as the user interface.
+- [x]  Extra endpoints to visualise data in different ways to consolidate the use of *inlude*, *through*, column aliases 
+- [x]  An endpoint for an admin to approve of reviews before their publication
+- [x] Front. A single page application as the user interface.
 
 
 ## Data modelling 🔄
@@ -85,7 +85,7 @@ Here we also have the file for Nodemailer.
 
 Furthermore, I created an infograph of the basic steps for the creation and manipulation of tables to better grasp the process before starting: 
 
-![Infograph Sequelize](./readme_img/sequelize_infograph.png)
+<img src="./readme_img/sequelize_infograph.png" alt= "Infograph Sequelize" width="350px" height="auto">
 
 ***
 
