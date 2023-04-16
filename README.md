@@ -20,7 +20,7 @@ Optional:
 - [x]  Admin and Superadmin roles
 - [x] Email confirmation on registration using **Nodemailer**  
 - [x]  An extra table of Reviews associated to Products and Users  
-- [x]  **Multer** to facilitate the uploading of images
+- [ ]  **Multer** to facilitate the uploading of images
 
 Extras that I added:
 
