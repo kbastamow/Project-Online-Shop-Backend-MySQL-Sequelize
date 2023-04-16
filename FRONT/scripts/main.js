@@ -236,14 +236,13 @@ function displayProducts(array) {
 
     //Displayin in HTML    
     let card = document.createElement("div");
-    card.setAttribute("class", "card m-3 p-2 col-2 text-center bg-danger");
-    card.innerHTML = `<h4 class="card-title mb-3 bg-black text-bg-dark p-2">${product.name}</h4>
-                           <div class="image-zoom">
-                               <img src="${product.image}" class="w-100" />
+    card.setAttribute("class", "card border-3 border-white m-3 col-8 col-sm-2 text-center text-bg-dark rounded-0 h-25");
+    card.innerHTML = `<h4 class="card-title mw-100  bg-black text-bg-dark p-2 mb-0">${product.name}</h4>
+                           <div class="image-zoom w-100 bg-white">
+                               <img src="${product.image}" class="w-75 mt-3" />
                            </div>
-                           <div class="card-body">
+                           <div class="card-body bg-white text-bg-light">
                                <h5 class="mb-3">${product.price}€</h5>
-                               
                                <p class="show-details mt-2" data-bs-toggle="collapse" data-bs-target="#details${product.id}">Show Details</p>
                                <p id="details${product.id}" class="collapse text-center">${product.description}</p>
                            </div>
@@ -256,7 +255,7 @@ function displayProducts(array) {
 
 
     const buyBtn = document.createElement("button");
-    buyBtn.setAttribute("class", "buy-btn btn btn-dark mt-3")
+    buyBtn.setAttribute("class", "buy-btn btn btn-dark rounded-0 border-0")
     buyBtn.setAttribute("value", product.id) //to identify - check if necessary
     buyBtn.innerText = "Add to cart";
     buyBtn.addEventListener("click", addToCart);
@@ -269,7 +268,6 @@ function displayProducts(array) {
 
 function calculateStars(product) {
   let reviews = product.Reviews;
-  console.log(product.Reviews);
   let ratingDisplay = "";
   if (reviews.length === 0) {
     ratingDisplay = `<p>No reviews yet</p>`
@@ -282,20 +280,20 @@ function calculateStars(product) {
     let emptyStars = 5 - Math.ceil(average);
 
     for (let i = 0; i < fullStars; i++) {
-      ratingDisplay += `<i class="fa-solid fa-star" style="color: #ffff00;"></i>`
+      ratingDisplay += `<i class="fa-solid fa-star" style="color: #e33517;"></i>`
     }
     if (halfStars) {
-      ratingDisplay += `<i class="fa-regular fa-star-half-stroke" style="color: #ffff00;"></i>`
+      ratingDisplay += `<i class="fa-regular fa-star-half-stroke" style="color: #e33517;"></i>`
     }
     for (let i = 0; i < emptyStars; i++) {
-      ratingDisplay += `<i class="fa-regular fa-star" style="color: #ffff00;"></i>`
+      ratingDisplay += `<i class="fa-regular fa-star" style="color: #e33517;"></i>`
     }
     ratingDisplay += `<p class="read-more mt-2" data-bs-toggle="collapse" data-bs-target="#reviews${product.id}">Read more</p>
                       <div id="reviews${product.id}" class="collapse text-center"></div>`
   }
 
   const rating = document.createElement("div");
-  rating.setAttribute("class", "rating-display")
+  rating.setAttribute("class", "rating-display bg-white text-bg-light")
   rating.innerHTML = `<p class="mb-0">Rating:</p>${ratingDisplay}`
   return rating;
 

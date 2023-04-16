@@ -13,7 +13,8 @@ header {
 header img {
     object-fit: cover;
     width: 100%;
-    max-height:20vh;
+    height: 100%;
+   
     
 
 }
