@@ -37,7 +37,7 @@ Optional:
 - [x]  Admin and Superadmin roles
 - [x] Email confirmation on registration using **Nodemailer**  
 - [x]  An extra table of Reviews associated to Products and Users  
-- [ ]  **Multer** to facilitate the uploading of images
+- [x]  **Multer** to facilitate the uploading of images
 
 Extras that I added:
 
@@ -292,6 +292,104 @@ It would be useful to seed junction tables with parent table seeder, but this is
     },
     ...
 ```
+
+***
+
+
+## Multer - investigation
+
+Multer is a node.js middleware for handling multipart/form-data , w used for uploading files. Apart from the official documentation
+[Official documentation](https://www.npmjs.com/package/multer), the following tutorial and related github was helpful: [Youtube: Image / File Upload On Node Sequelize Rest API.](https://www.youtube.com/watch?v=sVYrH166LXM)
+
+### Installation
+```bash
+$ npm install --save multer
+```
+
+### Upload - middleware 
+
+I saved image upload code in the middleware folder.
+
+```js
+const multer = require("multer");
+const path = require('path')
+```
+
+The following code defines where the file should be stored. In this case I'm saving it directly to the assets folder in my frontend:
+```js
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "./FRONT/assets")
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+      }
+  })
+```
+* **file.originalname** is an inbuilt property of the file object provided by multer, and includes the file extension.
+
+
+The following code defines what happens on file upload:
+```js
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: '2000000' }, 
+    fileFilter: (req, file, cb) => { 
+        const fileTypes = /jpeg|jpg|png|/ 
+        const mimeType = fileTypes.test(file.mimetype) 
+        const extname = fileTypes.test(path.extname(file.originalname)) 
+
+        if(mimeType && extname) {
+            return cb(null, true)  
+        }
+        cb("File format not accepted") 
+    }
+})
+
+module.exports = upload;
+
+```
+* Image size is limited to 2MB.
+
+* **fileFilter** function is used to define accepted filetypes.
+
+* Accepted types are defined with a regular expression.
+
+* We check the uploaded file's MIMEtype using JavaScript Regular Expression **test()** method. A MIME type consists of two parts: a "type" and a "subtype", separated by a forward slash (/), e.g. image/jpeg. **file.mimetype** is an inbuilt property provided by Multer.
+
+* **path.extname()** is a built-in function in the Node.js path module (imported on top!) that returns the extension of a file path -this is also checked.
+
+* If both **mimeType** and **extname** return true, we return a multer callback with two values: **null** for the error argument (i.e. there is no error), and **true** for the second argument (i.e. the file is accepted). 
+
+**Warning**  
+
+Both MIMEtype and file extension are checked as MIME gives information about the real type of the file, while the extension is an indicator only and could be used to mask a different type of file.
+Nevertheless, in the current project, we may assume a person with admin rights necessary to upload files won't try to upload harmful files.
+
+### Modifying ProductController
+
+Files must be passed through **form-data**. Req.body gathers all text input, while **req.file.path** determines the image path. **.path** is a property of the req.file object, provided by Multer.
+
+```js
+const product = await Product.create({...req.body, image: req.file.path});
+```
+
+The way to post data using Postman changes:
+* Instead of uf **raw** and **json** object, we pass all the information as form-data, with image type set to file.  
+
+* The CategoryIds to add data to the Categories_Products junction table must be specified as separate entries. However, adding square brackets after the key name [] results in the ids being gathered into one array, and they can be manipulated as an array in the code.
+
+![Postman](./readme_img/postman_upload.png)
+
+
+### Adding upload to the Route
+
+In this case, the user can upload a single file. 
+
+```js
+router.post("/createProduct", authentication, isAdmin, upload.single("image"), ProductController.create);
+```
+
 
 ***
 ## Front 🪟

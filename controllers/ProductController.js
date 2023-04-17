@@ -1,6 +1,7 @@
 const { Product, Category, Category_Product, Review, Sequelize } = require("../models/index.js");
 const { Op } = Sequelize; 
 
+
 const ProductController = {
     async create(req, res, next) {
         try {
@@ -11,7 +12,8 @@ const ProductController = {
                     return res.status(404).send({ msg: `Category with id ${entry} not found.` })
                 }
             });
-            const product = await Product.create(req.body);
+
+            const product = await Product.create({...req.body, image: req.file.path}); //Adds image as uploaded file
             product.addCategories(req.body.CategoryId);
             res.status(201).send({ msg: "New product created", product });
 

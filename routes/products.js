@@ -1,10 +1,11 @@
 const express = require("express");
 const ProductController = require("../controllers/ProductController");
+const upload = require("../middleware/upload");
 const router = express.Router();
 const { authentication, isAdmin } = require("../middleware/authentication");
 
 
-router.post("/createProduct", authentication, isAdmin, ProductController.create);
+router.post("/createProduct", upload.single("image"), ProductController.create);
 router.get("/getAllwithAssociations", ProductController.getAllwithAssociations);
 router.get("/findByName/:name", ProductController.findByName);
 router.get("/findByPrice/:price", ProductController.findByPrice);
@@ -15,6 +16,6 @@ router.post("/updateById/:id", authentication, isAdmin, ProductController.update
 router.delete("/deleteById/:id", authentication, isAdmin, ProductController.deleteById);
 
 
-
+// authentication, isAdmin,
 
 module.exports = router;
