@@ -17,6 +17,11 @@ The aim of the project was to create a backend for an imaginary online shop usin
   - [Ordering results](#-ordering-results)
   - [Updating junction/associated tables:](#-updating-junctionassociated-tables)
 - [Seeders - observations](#seeders---observations-)
+- [Multer - investigation](#multer---investigation)
+  - [Installation](#installation)
+  - [Upload - middleware](#upload---middleware)
+  - [Modifying ProductController](#modifying-productcontroller)
+  - [Adding upload to the Route](#adding-upload-to-the-route)
 - [Front](#front)
 - [Tech](#tech-)
 - [Author](#author-)
@@ -42,7 +47,6 @@ Optional:
 Extras that I added:
 
 - [x]  Extra endpoints to visualise data in different ways to consolidate the use of *inlude*, *through*, column aliases 
-- [x]  An endpoint for an admin to approve of reviews before their publication
 - [x] Front. A single page application as the user interface.
 
 
