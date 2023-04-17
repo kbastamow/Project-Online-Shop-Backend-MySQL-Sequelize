@@ -180,7 +180,7 @@ function displayReviews(product) {
     const reviews = product.Reviews;
     const reviewDiv = document.createElement("div");
     reviewDiv.setAttribute("id", `reviews${product.id}`);
-    reviewDiv.setAttribute("class", "collapse text-center text-bg-dark mt-2 pt-1")
+    reviewDiv.setAttribute("class", "collapse text-center text-bg-dark border-top border-light pt-3")
     for (review of reviews) {
         const fullStars = review.stars;
         const emptyStars = 5 - fullStars
@@ -190,7 +190,7 @@ function displayReviews(product) {
         for (let i = 0; i < emptyStars; i++) {
             reviewDiv.innerHTML += `<i class="fa-regular fa-star fa-xs" style="color: #ffffff;"></i>`
         }
-        reviewDiv.innerHTML += `<p class="small px-2"><em>${review.details}</em></p><hr>`
+        reviewDiv.innerHTML += `<p class="small px-2"><em>${review.details}</em></p>`
     }
     return reviewDiv;
 }

@@ -89,7 +89,7 @@ Furthermore, I created an infograph of the basic steps for the creation and mani
 
 ***
 
-## Points of interest and Observations ❕
+## Controllers - observations 🚧
 
 
 ## 🔎 Using user-supplied info to find items
@@ -246,8 +246,77 @@ Currently, deletions of associated tables still need to be reviewed in the proje
 
 ***
 
+## Seeders - observations 🚜
+
+All the tables have a number of seeder files to populate the tables. User passwords have been encrypted in seeders too.
+
+The seeders should be used together on an empty database to make sure foreign keys (ids) coincide logically.
+
+It would be useful to seed junction tables with parent table seeder, but this is not possible with Sequelize **bulkInsert**.
+
+```js
+ async up (queryInterface, Sequelize) {
+    return queryInterface.bulkInsert ( "Users", [
+      {
+      email: "testadmin@example.co",
+      name: "Andy",
+      surname: "Administrator",
+      password: bcrypt.hashSync("1234", 10), 
+      role:"admin",
+      confirmed: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    ...
+```
+
+***
 ## Front
 
+I added a frontend with limited functionality:
+* It displays products and responds to the different category/name search functions, showing the product, price, description and reviews, as well as calculating an average rating on the client side.
+* It allows for login and logout, and displays the shopping cart that has been saved in the user's local storage. Products can be added or deleted from the cart.
+
+Products are displayed as bootstrap cards. Details and reviews are collapsibles that can be seen on click.
+
+![Computer](./readme_img/computerview.png)
+
+![dropdown-collapsible](./readme_img/details1.png)
+
+Login, registration and cart (for logged in users) are displayed on an offcanvas sidebar that can be opened by clicking the blue profile button.
+
+![offcanvas](./readme_img/offcanvas.png)
+
+On mobile devices, the cards occupy more horizontal space and the navbar stacks vertically.
+
+![mobile](./readme_img/mobile.png)
+
+
+On hover over product image, this lovely little css styling causes a zoom effect on the image: 
+
+```css
+.image-zoom {
+    overflow: hidden;
+  }
+  
+  .image-zoom img {
+    transition: transform .5s ease;
+    max-width: 100;
+  }
+  
+  .image-zoom:hover img {
+    transform: scale(1.5);
+  }
+
+  .show-details:hover, .read-more:hover {
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .click:hover {
+    cursor: pointer;
+  }
+```
 
 ## Tech 💻
 
@@ -266,7 +335,8 @@ Back:
   * cors
 
 Front:
-* Bootstrap 5
+* HTML, JS - no frameworks
+* CSS, Bootstrap 5
 * AXIOS
 
 ## Author ♣️
