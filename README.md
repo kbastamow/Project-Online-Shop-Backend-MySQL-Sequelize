@@ -302,16 +302,16 @@ It would be useful to seed junction tables with parent table seeder, but this is
 ***
 
 
-## Multer - investigation
+## Multer - investigation ⬆️
 
 Multer is a node.js middleware for handling multipart/form-data , w used for uploading files. Apart from the [Official documentation](https://www.npmjs.com/package/multer), the following tutorial and related github was helpful: [Youtube: Image / File Upload On Node Sequelize Rest API.](https://www.youtube.com/watch?v=sVYrH166LXM)
 
-### Installation
+### ⚒️ Installation
 ```bash
 $ npm install --save multer
 ```
 
-### Upload - middleware 
+### 💾 Handling upload
 
 I saved image upload code in the middleware folder.
 
@@ -365,12 +365,10 @@ module.exports = upload;
 
 * If both **mimeType** and **extname** return true, we return a multer callback with two values: **null** for the error argument (i.e. there is no error), and **true** for the second argument (i.e. the file is accepted). 
 
-⚠️**Warning**
-
-Both MIMEtype and file extension are checked as MIME gives information about the real type of the file, while the extension is an indicator only and could be used to mask a different type of file.
+>__Warning__ Both MIMEtype and file extension are checked as MIME gives information about the real type of the file, while the extension is an indicator only and could be used to mask a different type of file.
 Nevertheless, in the current project, we may assume a person with admin rights necessary to upload files won't try to upload harmful files.
 
-### Modifying ProductController
+### ⚙️ Modifying ProductController
 
 Files must be passed through **form-data**. Req.body gathers all text input, while **req.file.path** determines the image path. **.path** is a property of the req.file object, provided by Multer.
 
@@ -386,7 +384,7 @@ The way to post data using Postman changes:
 ![Postman](./readme_img/postman_upload.png)
 
 
-### Adding upload to the Route
+### 🛣️ Adding upload to the Route
 
 In this case, the user can upload a single file. 
 
