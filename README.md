@@ -436,7 +436,7 @@ Back:
 * MySQL and MySQL Workbench
 * Postman -for endpoint testing
 * Node.JS
-* Dependencies: 
+* Packages: 
   * express
   * mysql2
   * sequelize
