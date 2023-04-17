@@ -301,10 +301,9 @@ It would be useful to seed junction tables with parent table seeder, but this is
 
 ***
 
-
 ## Multer - investigation ⬆️
 
-Multer is a node.js middleware for handling multipart/form-data , w used for uploading files. Apart from the [Official documentation](https://www.npmjs.com/package/multer), the following tutorial and related github was helpful: [Youtube: Image / File Upload On Node Sequelize Rest API.](https://www.youtube.com/watch?v=sVYrH166LXM)
+Multer is a node.js middleware for handling multipart/form-data, used for uploading files. Apart from the [Official documentation](https://www.npmjs.com/package/multer), the following tutorial and related github was helpful: [Youtube: Image / File Upload On Node Sequelize Rest API.](https://www.youtube.com/watch?v=sVYrH166LXM)
 
 ### ⚒️ Installation
 ```bash
@@ -383,7 +382,6 @@ The way to post data using Postman changes:
 
 ![Postman](./readme_img/postman_upload.png)
 
-
 ### 🛣️ Adding upload to the Route
 
 In this case, the user can upload a single file. 
@@ -410,10 +408,9 @@ Login, registration and cart (for logged-in users) are displayed on an offcanvas
 
 ![offcanvas](./readme_img/offcanvas.png)
 
-On mobile devices, the cards occupy more horizontal space and the navbar stacks vertically.
+On mobile devices, the cards increase in width and the navbar stacks vertically.
 
 ![mobile](./readme_img/mobile.png)
-
 
 On hover over product image, this lovely little css styling creates a zoom effect on the image: 
 
@@ -446,6 +443,7 @@ Back:
   * jsonwebtoken
   * bcryptjs
   * nodemailer
+  * multer
   * nodemon
   * cors - to access server from the html front 
 
@@ -454,7 +452,7 @@ Front:
 * CSS, Bootstrap 5
 * AXIOS
 
-## Author ♣️
+## Author 🦇
 
 * Kbastamow
  
