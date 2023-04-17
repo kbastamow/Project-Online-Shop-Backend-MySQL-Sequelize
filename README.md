@@ -320,11 +320,11 @@ const multer = require("multer");
 const path = require("path")
 ```
 
-The following code defines where the file should be stored. In this case I'm saving it directly to the assets folder in my frontend:
+The following code defines where the file should be stored.
 ```js
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, "./FRONT/assets")
+        cb(null, "./uploaded_imgs/")
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname)
@@ -332,7 +332,6 @@ const storage = multer.diskStorage({
   })
 ```
 * **file.originalname** is an inbuilt property of the file object provided by multer, and includes the file extension.
-
 
 The following code defines what happens on file upload:
 ```js
@@ -366,7 +365,7 @@ module.exports = upload;
 
 * If both **mimeType** and **extname** return true, we return a multer callback with two values: **null** for the error argument (i.e. there is no error), and **true** for the second argument (i.e. the file is accepted). 
 
-__Warning__
+⚠️**Warning**
 
 Both MIMEtype and file extension are checked as MIME gives information about the real type of the file, while the extension is an indicator only and could be used to mask a different type of file.
 Nevertheless, in the current project, we may assume a person with admin rights necessary to upload files won't try to upload harmful files.
@@ -380,7 +379,7 @@ const product = await Product.create({...req.body, image: req.file.path});
 ```
 
 The way to post data using Postman changes:
-* Instead of uf **raw** and **json** object, we pass all the information as form-data, with image type set to file.  
+* Instead of **raw** and **json** object, we pass all the information as **form-data**, with image field set to **file**.  
 
 * The CategoryIds to add data to the Categories_Products junction table must be specified as separate entries. However, adding square brackets after the key name [] results in the ids being gathered into one array, and they can be manipulated as an array in the code.
 

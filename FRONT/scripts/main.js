@@ -98,7 +98,18 @@ async function search(e) {
     e.preventDefault();
     const res = await axios.get(API_URL + "products/findByName/" + searchText.value);
     const products = res.data;
+    if (products.length === 0) {
+      const notFound = document.createElement("div");
+      notFound.setAttribute("class", "alert alert-primary w-100 p-1 text-center");
+      notFound.textContent = `No products match "${searchText.value}"`
+      productsDiv.insertBefore(notFound, productsDiv.firstChild);
+      setTimeout(function () {
+        productsDiv.removeChild(productsDiv.firstElementChild);
+      }, 4000);
+    } else {
+    console.log(products);
     displayProducts(products)
+    }
   } catch (err) {
     console.error(err);
   }
@@ -112,10 +123,10 @@ function displayProducts(array) {
     clearDisplay(products)
     array.forEach(product => {
         const card = document.createElement("div");
-        card.setAttribute("class", "card bg-dark border-3 border-white mx-auto mx-md-3 my-3 col-7 col-md-2 text-center rounded-0");
+        card.setAttribute("class", "card bg-dark border-3 border-white mx-auto mx-md-3 my-3 col-9 col-md-2 text-center rounded-0");
         card.innerHTML = `<h4 class="card-title w-100  bg-black text-bg-dark p-2 mb-0">${product.name}</h4>
                            <div class="image-zoom w-100 bg-white">
-                               <img src="${product.image}" class="img-fluid" />
+                               <img src="../${product.image}" class="img-fluid" />
                            </div>
                            <div class="card-body bg-white text-bg-light">
                                <h5>${product.price}€</h5>
