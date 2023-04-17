@@ -1,10 +1,27 @@
 # Project E-commerce 🖥️ 🛒
 
-# Description 📜 
+## Description 📜 
 
 The aim of the project was to create a backend for an imaginary online shop using **Node Js** and **Express** together with **MySQL** and **Sequelize**. A variety of REST APIs provide access to the data.
 
-# Objectives 🎯
+
+## Table of contents
+
+- [Objectives](#objectives-)
+- [Data modelling ](#data-modelling-)
+- [Project architecture](#project-architecture-)
+- [Controllers - observations](#controllers---observations-)
+  - [Using user-supplied info to find items](#-using-user-supplied-info-to-find-items)
+  - [Including associated tables](#-including-associated-tables)
+  - [Using Sequelize operators:](#-using-sequelize-operators)
+  - [Ordering results](#-ordering-results)
+  - [Updating junction/associated tables:](#-updating-junctionassociated-tables)
+- [Seeders - observations](#seeders---observations-)
+- [Front](#front)
+- [Tech](#tech-)
+- [Author](#author-)
+
+## Objectives 🎯
 
 The obligatory requirements for completing the exercice consist of:
 
@@ -92,7 +109,7 @@ Furthermore, I created an infograph of the basic steps for the creation and mani
 ## Controllers - observations 🚧
 
 
-## 🔎 Using user-supplied info to find items
+### 🔎 Using user-supplied info to find items
 Parameters - added to URL:  **findByPk** or  **where**-clause: 
 
 ```js
@@ -114,7 +131,7 @@ const user = await User.findOne({
 ```
 
 
-## ⛓️ Including associated tables
+### ⛓️ Including associated tables
 
 Include associated table:
 
@@ -175,8 +192,8 @@ attributes: [["id", "Order ID"]], //second value is alias
 ```
 
 
-## 🔣 Using Sequelize operators:
-Import **Op** and add to model object:
+### 🔣 Using Sequelize operators:
+Import **Sequelize** and add to model object:
 ```js
 const { Op } = Sequelize; 
 const { Category, Product, Category_Product, Review, Sequelize } = require("../models/index.js");
@@ -194,12 +211,12 @@ const { Category, Product, Category_Product, Review, Sequelize } = require("../m
 ```js
     const products = await Product.findAll({
         where: {
-            price: { [Op.between]: [(+req.params.price - 50), (+req.params.price + 50)] } //RANGE +- hundred  
+            price: { [Op.between]: [(+req.params.price - 50), (+req.params.price + 50)] } //RANGE +- fifty 
                 }
             });
 ```
 
-## ↕️ Ordering results
+### ↕️ Ordering results
 ```js
  const products = await Product.findAll({
                 order: [   
@@ -208,19 +225,25 @@ const { Category, Product, Category_Product, Review, Sequelize } = require("../m
             })
 ```
 
-## ⛓️ Updating junction/associated tables:
+### ⛓️ Updating junction/associated tables:
 
 Sequelize provides an easy way to modify associations while modifying the main table.
 With **add-** and **set-** methods, it is possible to pass an **array** to pass more than one value
+
+Postman body (JSON):
+```json
+{
+"name": "Tambourine",
+"price": 25,
+"description": "Real wood",
+"CategoryId": [1, 4]
+}
+```
 
 ```js
 const product = await Product.create(req.body);
 product.addCategories(req.body.CategoryId); //addCategories creates entry to junction table
 ```
-
-Postman:
-
-![Postman](./readme_img/associations_add.png)
 
 ```js
 await foundProduct.update(req.body);
@@ -271,19 +294,19 @@ It would be useful to seed junction tables with parent table seeder, but this is
 ```
 
 ***
-## Front
+## Front 🪟
 
 I added a frontend with limited functionality:
 * It displays products and responds to the different category/name search functions, showing the product, price, description and reviews, as well as calculating an average rating on the client side.
 * It allows for login and logout, and displays the shopping cart that has been saved in the user's local storage. Products can be added or deleted from the cart.
 
-Products are displayed as bootstrap cards. Details and reviews are collapsibles that can be seen on click.
+Products are displayed as Bootstrap cards. Details and reviews are collapsibles that can be revealed on click.
 
-![Computer](./readme_img/computerview.png)
+![Computer](./readme_img/computerview2.png)
 
 ![dropdown-collapsible](./readme_img/details1.png)
 
-Login, registration and cart (for logged in users) are displayed on an offcanvas sidebar that can be opened by clicking the blue profile button.
+Login, registration and cart (for logged-in users) are displayed on an offcanvas sidebar that can be opened by clicking the blue profile button.
 
 ![offcanvas](./readme_img/offcanvas.png)
 
@@ -292,7 +315,7 @@ On mobile devices, the cards occupy more horizontal space and the navbar stacks 
 ![mobile](./readme_img/mobile.png)
 
 
-On hover over product image, this lovely little css styling causes a zoom effect on the image: 
+On hover over product image, this lovely little css styling creates a zoom effect on the image: 
 
 ```css
 .image-zoom {
@@ -308,21 +331,13 @@ On hover over product image, this lovely little css styling causes a zoom effect
     transform: scale(1.5);
   }
 
-  .show-details:hover, .read-more:hover {
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .click:hover {
-    cursor: pointer;
-  }
 ```
-
+***
 ## Tech 💻
 
 Back:
 * MySQL and MySQL Workbench
-* Postman for endpoint testing
+* Postman -for endpoint testing
 * Node.JS
 * Dependencies: 
   * express
@@ -332,10 +347,10 @@ Back:
   * bcryptjs
   * nodemailer
   * nodemon
-  * cors
+  * cors - to access server from the html front 
 
 Front:
-* HTML, JS - no frameworks
+* HTML, JavaScript - no frameworks
 * CSS, Bootstrap 5
 * AXIOS
 

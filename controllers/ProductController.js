@@ -96,7 +96,7 @@ const ProductController = {
         try {
             const products = await Product.findAll({
                 where: {
-                    price: { [Op.between]: [(+req.params.price - 50), (+req.params.price + 50)] } //RANGE +- hundred  
+                    price: { [Op.between]: [(+req.params.price - 50), (+req.params.price + 50)] } //RANGE +- fifty  
                 }
             });
             if (!products) {
