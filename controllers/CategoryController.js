@@ -1,4 +1,4 @@
-const { Category, Product, Category_Product, Sequelize } = require("../models/index.js");
+const { Category, Product, Category_Product, Review, Sequelize } = require("../models/index.js");
 const { Op } = Sequelize; 
 
 const CategoryController = {
@@ -26,7 +26,7 @@ const CategoryController = {
     async getAllJoinProducts(req, res) {
         try {
             const categories = await Category.findAll({
-                include: [{ model: Product }]
+                include: [{ model: Product, include: [{ model: Review }] }]
             });
             res.send(categories)
         } catch (error) {

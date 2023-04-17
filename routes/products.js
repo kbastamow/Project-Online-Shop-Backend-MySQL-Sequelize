@@ -10,6 +10,7 @@ router.get("/findByName/:name", ProductController.findByName);
 router.get("/findByPrice/:price", ProductController.findByPrice);
 router.get("/orderByPrice", ProductController.orderByPrice);
 router.get("/findById/:id", ProductController.findById);
+router.post("/findVarious", ProductController.findVarious) //must be post as I'm passing searched ids in the body
 router.post("/updateById/:id", authentication, isAdmin, ProductController.updateById);
 router.delete("/deleteById/:id", authentication, isAdmin, ProductController.deleteById);
 
