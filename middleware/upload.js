@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
         const extname = fileTypes.test(path.extname(file.originalname)) //path.extname() is a built-in function in the Node.js path module that returns the extension of a file path.
 
         if(mimeType && extname) {
-            return cb(null, true)  //null -> file is accepted; 
+            return cb(null, true)  //no error, file is accepted; 
         }
         cb("File format not accepted") //cb - callback is provided by multer
     }
