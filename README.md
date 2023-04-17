@@ -79,6 +79,8 @@ Here we also have the file for Nodemailer.
 
 - Error handling: With Express, we can add a third parameter (req, res, **next**) to asynchronous functions and   "outsource" the handling of common errors to this middleware, which results in more efficient programming.
 
+-Multer upload.js to define how file upload is handled.
+
 📁MIGRATIONS 
 - Migrations are instructions for and a track record of changes in the database. Table columns and their properties may be defined here before performing the migration, i.e. creating or modifying a table.
 
@@ -302,8 +304,7 @@ It would be useful to seed junction tables with parent table seeder, but this is
 
 ## Multer - investigation
 
-Multer is a node.js middleware for handling multipart/form-data , w used for uploading files. Apart from the official documentation
-[Official documentation](https://www.npmjs.com/package/multer), the following tutorial and related github was helpful: [Youtube: Image / File Upload On Node Sequelize Rest API.](https://www.youtube.com/watch?v=sVYrH166LXM)
+Multer is a node.js middleware for handling multipart/form-data , w used for uploading files. Apart from the [Official documentation](https://www.npmjs.com/package/multer), the following tutorial and related github was helpful: [Youtube: Image / File Upload On Node Sequelize Rest API.](https://www.youtube.com/watch?v=sVYrH166LXM)
 
 ### Installation
 ```bash
@@ -316,7 +317,7 @@ I saved image upload code in the middleware folder.
 
 ```js
 const multer = require("multer");
-const path = require('path')
+const path = require("path")
 ```
 
 The following code defines where the file should be stored. In this case I'm saving it directly to the assets folder in my frontend:
@@ -365,7 +366,7 @@ module.exports = upload;
 
 * If both **mimeType** and **extname** return true, we return a multer callback with two values: **null** for the error argument (i.e. there is no error), and **true** for the second argument (i.e. the file is accepted). 
 
-**Warning**  
+__Warning__
 
 Both MIMEtype and file extension are checked as MIME gives information about the real type of the file, while the extension is an indicator only and could be used to mask a different type of file.
 Nevertheless, in the current project, we may assume a person with admin rights necessary to upload files won't try to upload harmful files.
