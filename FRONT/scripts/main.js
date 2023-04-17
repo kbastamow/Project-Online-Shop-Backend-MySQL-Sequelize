@@ -57,8 +57,6 @@ let productInfo = []; //save information of cart's products in array
 let total = 0;
 
 
-
-
 //Get cart's product info from server
 async function getProductInfo(){
    cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
@@ -82,8 +80,6 @@ async function getProductInfo(){
 
     displayCart()
 }
-
-
 
 
  
@@ -213,21 +209,6 @@ function clearCart(){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Display Catalogue of products
 
 function displayProducts(array) {
@@ -236,13 +217,13 @@ function displayProducts(array) {
 
     //Displayin in HTML    
     let card = document.createElement("div");
-    card.setAttribute("class", "card border-3 border-white m-3 col-8 col-sm-2 text-center text-bg-dark rounded-0 h-25");
+    card.setAttribute("class", "card bg-dark border-3 border-white m-3 col-8 col-sm-3 col-md-2 text-center rounded-0 h-auto ");
     card.innerHTML = `<h4 class="card-title mw-100  bg-black text-bg-dark p-2 mb-0">${product.name}</h4>
                            <div class="image-zoom w-100 bg-white">
-                               <img src="${product.image}" class="w-75 mt-3" />
+                               <img src="${product.image}" class="img-fluid" />
                            </div>
                            <div class="card-body bg-white text-bg-light">
-                               <h5 class="mb-3">${product.price}€</h5>
+                               <h5>${product.price}€</h5>
                                <p class="show-details mt-2" data-bs-toggle="collapse" data-bs-target="#details${product.id}">Show Details</p>
                                <p id="details${product.id}" class="collapse text-center">${product.description}</p>
                            </div>
@@ -253,6 +234,7 @@ function displayProducts(array) {
     let rating = calculateStars(product);  //Long function - declared separately and called here
     card.appendChild(rating);
 
+    let reviewDiv = displayReviews(product) //Another function that has been separated to avoid overly long main function
 
     const buyBtn = document.createElement("button");
     buyBtn.setAttribute("class", "buy-btn btn btn-dark rounded-0 border-0")
@@ -260,8 +242,6 @@ function displayProducts(array) {
     buyBtn.innerText = "Add to cart";
     buyBtn.addEventListener("click", addToCart);
     card.appendChild(buyBtn);
-
-    let reviewDiv = displayReviews(product) //Another function that has been separated to avoid overly long main function
     card.appendChild(reviewDiv);
   })
 }
