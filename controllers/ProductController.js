@@ -13,7 +13,7 @@ const ProductController = {
                 }
             });
 
-            const product = await Product.create({...req.body, image: req.file.path}); //Adds image as uploaded file
+            const product = await Product.create({...req.body, image: req.file.filename}); //Adds image as uploaded file
             product.addCategories(req.body.CategoryId);
             res.status(201).send({ msg: "New product created", product });
 
@@ -34,6 +34,7 @@ const ProductController = {
                     model: Review
                 }],
             });
+            console.log(products)
             res.send(products);
         } catch (error) {
             console.error(error);

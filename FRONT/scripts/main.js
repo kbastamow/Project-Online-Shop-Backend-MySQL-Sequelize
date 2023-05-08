@@ -6,7 +6,7 @@ const accessories = document.getElementById("accessories")
 const music = document.getElementById("music")
 const dropdownCats = document.querySelectorAll(".dropdown-item")
 const searchForm = document.getElementById("search")
-const searchText = document.getElementById("search-text")
+const searchText = document.getElementById("search-text") 
 
 
 //Offcanvas
@@ -438,8 +438,6 @@ function clearDisplay(parent){
   parent.removeChild(parent.firstChild);
   }
 }
-
-
 
 
 searchForm.addEventListener("submit", search)
