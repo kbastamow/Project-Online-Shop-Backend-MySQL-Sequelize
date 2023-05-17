@@ -40,7 +40,8 @@ const CategoryController = {
             const foundCat = await Category.findOne({
                 where: {
                     id: req.params.id
-                }
+                },
+                include: [{ model: Product, include: [{ model: Review }] }]
             });
             if (!foundCat) {
                 return res.status(404).send({ msg: `Category with id ${req.params.id} not found` });
@@ -58,7 +59,7 @@ const CategoryController = {
             const category = await Category.findAll({
                 where: {
                     name: { [Op.like]: `%${req.params.name}%` }
-                }
+                },
             });
             if (!category) {
                 return res.status(404).send("No category matches your search.")
@@ -88,7 +89,6 @@ const CategoryController = {
             res.status(500).send(error);
         }
     },
-
 
     async deleteById(req, res) {
         try {

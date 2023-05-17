@@ -7,7 +7,6 @@ const transporter = require("../config/nodemailer");
 
 
 const UserController = {
-    //CREATE NEW USER
     async create(req, res, next) {  //NEXT parameter delegates the error handling to middleware
         req.body.role = "user"; //default
         try {
@@ -26,7 +25,7 @@ const UserController = {
                     `,
             });
             res.status(201).send({
-                msg: "Email of confirmation sent",
+                msg: "Please check your email to confirm registration!",
                 user,
             });
 
@@ -131,7 +130,7 @@ const UserController = {
     async getUserJoinOrdersConcise(req, res) {
         try {
             const user = await User.findByPk(req.params.id, {
-                attributes: ["id", "name", "surname", "email"],
+                attributes: ["id", "name", "surname", "email", "createdAt"],
                 include: [{
                     model: Order,
                     attributes: ["id"],

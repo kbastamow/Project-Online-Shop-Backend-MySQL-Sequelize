@@ -4,13 +4,15 @@ const PORT = 3000;
 app.use(express.json());
 const { typeError } = require('./middleware/errors');
 const cors = require("cors")
-const corsOptions = {
-    origin:'*', 
-    credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200,
- }
+// const corsOptions = {
+//     origin:'*', 
+//     credentials:true,            //access-control-allow-credentials:true
+//     optionSuccessStatus:200,
+//  }
 
-app.use(cors(corsOptions));
+app.use(cors())
+
+// app.use(cors(corsOptions));
 app.use(express.static('./public'))
 
 

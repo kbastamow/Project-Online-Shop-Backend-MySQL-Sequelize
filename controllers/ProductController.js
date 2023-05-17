@@ -34,8 +34,7 @@ const ProductController = {
                     model: Review
                 }],
             });
-            console.log(products)
-            res.send(products);
+            res.status(200).send(products);
         } catch (error) {
             console.error(error);
             res.status(500).send(error);
@@ -66,8 +65,15 @@ const ProductController = {
   async findVarious(req,res) {
     try{
         const products = await Product.findAll({
-            where: { id: req.body.id }   //req body should be an array
-            })
+            where: { id: req.body.id },   //req body should be an array
+            include: [{
+                model: Category,
+                attributes: ["name"],
+                through: { attributes: [] } //Adding categories to view. Specialising through: { attributes: [] } as empty excludes the junction table from the view
+            }, {
+                model: Review
+            }],
+        })
         res.send(products);
     } catch(error) {
         console.error(error);

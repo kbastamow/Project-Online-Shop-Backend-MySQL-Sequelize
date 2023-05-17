@@ -17,9 +17,10 @@ const OrderController = {
             orderArray.forEach(pair => {
                 order.addProduct(pair.ProductId, { through: { quantity: pair.quantity } })  //THROUGH ACCESSES OTHER COlUMNS IN JUNCTION TABLE
             })
-
+            console.log(req.body)
             res.status(201).send({ msg: "Order created", order })
         } catch (error) {
+            console.log(req.body)
             res.status(500).send(error);
         }
     },
@@ -27,7 +28,7 @@ const OrderController = {
     async getAllJoinProducts(req, res) {
         try {
             const orders = await Order.findAll({
-                attributes: [["id", "Order ID"]], //second value is alias
+                attributes: [["id", "Order ID"]], //THE SECOND PARAMETER IS ALIAS. NOTICE THE DOUBLE ARRAY    
                 include: [{ model: Product, attributes: ["name"], through: { model: Order_Product, attributes: ["quantity"] } }]
             })
             res.send(orders);
@@ -45,10 +46,10 @@ const OrderController = {
                 where: {
                     UserId: req.user.id
                 },
-                attributes: [["updatedAt", "Order created or updated on"]],
+                attributes: ["createdAt"],
                 include: ({
                     model: Product,
-                    attributes: [["name", "Name of Product"]], //THE SECOND PARAMETER IS ALIAS. NOTICE THE DOUBLE ARRAY              
+                    attributes: ["name", "price"],           
                     through: { attributes: ["quantity"] }, // include 'quantity' attribute from junction table
                 })
             });
