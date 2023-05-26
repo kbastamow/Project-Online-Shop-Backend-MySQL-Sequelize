@@ -394,45 +394,25 @@ router.post("/createProduct", authentication, isAdmin, upload.single("image"), P
 ***
 ## Front 🪟
 
-I added a frontend with limited functionality:
-* It displays products and responds to the different category/name search functions, showing the product, price, description and reviews, as well as calculating an average rating on the client side.
-* It allows for login and logout, and displays the shopping cart that has been saved in the user's local storage. Products can be added or deleted from the cart.
 
-Products are displayed as Bootstrap cards. Details and reviews are collapsibles that can be revealed on click.
+The shop has two different fronts.
+The original, as an extra for this project, was done in Vanilla JavaScript and can be found here:
 
-![Computer](./readme_img/computerview2.png)
+[Online shop frontend Vanilla JavaScript](https://github.com/kbastamow/Project-Online-Shop-FrontEnd-VanillaJS.git)
 
-![dropdown-collapsible](./readme_img/details1.png)
+![VanillaJS](./readme_img/computerview2.png)
 
-Login, registration and cart (for logged-in users) are displayed on an offcanvas sidebar that can be opened by clicking the blue profile button.
+Later, I did another project with React, with a lot more functionality. The React front can be found here:
 
-![offcanvas](./readme_img/offcanvas.png)
+[Online shop frontend with React](https://github.com/kbastamow/Project-Online-Shop-Frontend-React.git)
 
-On mobile devices, the cards increase in width and the navbar stacks vertically.
+![React](./readme_img/overview.png)
 
-![mobile](./readme_img/mobile.png)
 
-On hover over product image, this lovely little css styling creates a zoom effect on the image: 
-
-```css
-.image-zoom {
-    overflow: hidden;
-  }
-  
-  .image-zoom img {
-    transition: transform .5s ease;
-    max-width: 100;
-  }
-  
-  .image-zoom:hover img {
-    transform: scale(1.5);
-  }
-
-```
+***
 ***
 ## Tech 💻
 
-Back:
 * MySQL and MySQL Workbench
 * Postman -for endpoint testing
 * Node.JS
@@ -446,11 +426,6 @@ Back:
   * multer
   * nodemon
   * cors - to access server from the html front 
-
-Front:
-* HTML, JavaScript - no frameworks
-* CSS, Bootstrap 5
-* AXIOS
 
 ## Author 🦇
 
